@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Design Folio — Class Progress</title>
+<style>
+  :root {
+    --bg: #0a0a18;
+    --panel: #10102a;
+    --teal: #00e5cc;
+    --pink: #ff4da6;
+    --yellow: #ffd700;
+    --orange: #ff8c42;
+    --blue: #4d9fff;
+    --green: #39e75f;
+    --purple: #c084fc;
+    --white: #e8f0ff;
+    --dim: #6677aa;
+    --font: 'Courier New', Courier, monospace;
+    --sans: Arial, Helvetica, sans-serif;
+    --glow-teal: 0 0 20px #00e5ccaa, 0 0 60px #00e5cc44;
+    --glow-pink: 0 0 20px #ff4da6aa, 0 0 60px #ff4da644;
+    --glow-yellow: 0 0 20px #ffd700aa, 0 0 60px #ffd70044;
+    --glow-green: 0 0 20px #39e75faa, 0 0 60px #39e75f44;
+    --glow-purple: 0 0 20px #c084fcaa, 0 0 60px #c084fc44;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--sans);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+  }
+
+  /* scanlines */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 6px);
+    pointer-events: none; z-index: 9999;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 28px;
+    background: var(--panel);
+    border-bottom: 2px solid var(--pink);
+    box-shadow: 0 2px 30px #ff4da655;
+    flex-shrink: 0;
+  }
+  .header-left { display: flex; flex-direction: column; gap: 2px; }
+  .header-title {
+    font-family: var(--font); font-size: 1rem; letter-spacing: 3px;
+    color: var(--pink); text-shadow: var(--glow-pink); text-transform: uppercase;
+  }
+  .header-sub { font-size: 0.75rem; color: var(--dim); letter-spacing: 1px; }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .week-badge {
+    font-family: var(--font); font-size: 0.75rem; letter-spacing: 2px;
+    color: var(--yellow); text-shadow: var(--glow-yellow);
+    border: 1px solid var(--yellow); border-radius: 20px; padding: 4px 14px;
+  }
+  .checkpoint-badge {
+    font-family: var(--font); font-size: 0.72rem; letter-spacing: 1px;
+    padding: 4px 12px; border-radius: 20px;
+    background: transparent; transition: all 0.4s;
+  }
+  .checkpoint-badge.active { color: var(--teal); border: 1px solid var(--teal); text-shadow: var(--glow-teal); box-shadow: var(--glow-teal); }
+  .checkpoint-badge.inactive { color: #2a3355; border: 1px solid #1a2244; }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 2.4fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 0;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  /* ── SIDE PANELS ── */
+  .side-panel {
+    display: flex; flex-direction: column;
+    padding: 20px 16px;
+    overflow: hidden;
+    gap: 0;
+  }
+  .side-panel.left { border-right: 1px solid #1a1a44; }
+  .side-panel.right { border-left: 1px solid #1a1a44; }
+
+  .side-label {
+    font-family: var(--font); font-size: 0.6rem; letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: 14px; padding-bottom: 8px;
+    border-bottom: 1px solid #1a2244;
+  }
+  .side-label.done-label { color: var(--green); }
+  .side-label.next-label { color: var(--orange); }
+
+  /* ── DONE STEPS (left) ── */
+  .done-steps { display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+  .done-step {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px;
+    background: #080814;
+    border: 1px solid #141430;
+    border-radius: 6px;
+    opacity: 0.7;
+    transition: all 0.5s;
+  }
+  .done-step .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .done-step .text { display: flex; flex-direction: column; gap: 2px; }
+  .done-step .step-name { font-size: 0.82rem; color: var(--green); font-weight: bold; }
+  .done-step .step-slide { font-family: var(--font); font-size: 0.6rem; color: #3a5a3a; letter-spacing: 1px; }
+  .done-check { margin-left: auto; color: var(--green); font-size: 1.1rem; flex-shrink: 0; }
+
+  /* ── NEXT STEPS (right) ── */
+  .next-steps { display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+  .next-step {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px;
+    background: #0c0c1e;
+    border: 1px solid #1e1e44;
+    border-radius: 6px;
+    transition: all 0.5s;
+  }
+  .next-step.immediate {
+    border-color: #ff8c4255;
+    background: #180e04;
+  }
+  .next-step .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .next-step .text { display: flex; flex-direction: column; gap: 2px; }
+  .next-step .step-name { font-size: 0.82rem; color: var(--dim); }
+  .next-step.immediate .step-name { color: var(--orange); }
+  .next-step .step-slide { font-family: var(--font); font-size: 0.6rem; color: #334; letter-spacing: 1px; }
+  .next-step.immediate .step-slide { color: #664422; }
+  .next-soon { margin-left: auto; font-family: var(--font); font-size: 0.6rem; color: var(--orange); letter-spacing: 1px; flex-shrink: 0; }
+
+  /* checkpoint indicator in side panels */
+  .cp-divider {
+    display: flex; align-items: center; gap: 8px;
+    margin: 8px 0; font-family: var(--font);
+    font-size: 0.58rem; letter-spacing: 2px;
+    color: var(--teal); text-shadow: var(--glow-teal);
+  }
+  .cp-divider::before, .cp-divider::after { content: ''; flex: 1; height: 1px; background: var(--teal); opacity: 0.3; }
+  .cp-divider.done-cp { color: var(--green); text-shadow: var(--glow-green); }
+  .cp-divider.done-cp::before, .cp-divider.done-cp::after { background: var(--green); }
+
+  /* ── CENTRE PANEL ── */
+  .centre-panel {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* background glow blob */
+  .centre-panel::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--current-glow, #00e5cc22) 0%, transparent 70%);
+    pointer-events: none;
+    transition: background 0.6s;
+  }
+
+  /* step counter */
+  .step-counter {
+    font-family: var(--font); font-size: 0.7rem; letter-spacing: 3px;
+    color: var(--dim); margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .step-counter span { color: var(--white); }
+
+  /* NOW label */
+  .now-label {
+    font-family: var(--font); font-size: 0.75rem; letter-spacing: 5px;
+    text-transform: uppercase; margin-bottom: 12px;
+    padding: 4px 20px; border-radius: 20px;
+    transition: all 0.5s;
+  }
+
+  /* Main step card */
+  .current-card {
+    width: 100%; max-width: 580px;
+    background: var(--panel);
+    border: 2px solid var(--current-colour, var(--teal));
+    border-radius: 16px;
+    padding: 32px 36px;
+    text-align: center;
+    position: relative;
+    box-shadow: var(--current-box-shadow, var(--glow-teal));
+    transition: all 0.5s;
+    margin-bottom: 24px;
+  }
+  .current-card::before {
+    content: attr(data-slide);
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--bg); padding: 0 16px;
+    font-family: var(--font); font-size: 0.65rem; letter-spacing: 3px;
+    color: var(--current-colour, var(--teal)); text-transform: uppercase;
+    text-shadow: 0 0 8px currentColor;
+  }
+  .current-icon { font-size: 3.5rem; margin-bottom: 16px; display: block; }
+  .current-name {
+    font-size: 2rem; font-weight: bold; color: var(--white);
+    line-height: 1.2; margin-bottom: 10px;
+    transition: all 0.4s;
+  }
+  .current-desc {
+    font-size: 0.95rem; color: var(--dim); line-height: 1.6;
+    transition: all 0.4s;
+  }
+  .current-tips {
+    margin-top: 16px; padding-top: 14px;
+    border-top: 1px solid #1e2255;
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  }
+  .tip-chip {
+    font-size: 0.75rem; padding: 4px 12px; border-radius: 20px;
+    background: #080814; border: 1px solid #1e2255;
+    color: var(--dim); font-family: var(--font);
+    letter-spacing: 1px;
+  }
+
+  /* checkpoint announcement */
+  .checkpoint-announce {
+    font-family: var(--font); font-size: 0.7rem; letter-spacing: 2px;
+    padding: 8px 20px; border-radius: 6px; text-align: center;
+    margin-bottom: 16px;
+    transition: all 0.5s;
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  .checkpoint-announce.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section {
+    width: 100%; max-width: 580px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .progress-label {
+    display: flex; justify-content: space-between;
+    font-family: var(--font); font-size: 0.6rem; letter-spacing: 2px; color: var(--dim);
+  }
+  .progress-track {
+    width: 100%; height: 6px; background: #1a1a35; border-radius: 3px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 3px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s;
+  }
+
+  /* ── FOOTER NAV ── */
+  footer {
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+    padding: 10px 28px;
+    background: var(--panel);
+    border-top: 1px solid #1a1a44;
+    flex-shrink: 0;
+  }
+  .nav-btn {
+    background: #0c0c22; border: 1px solid #2a2a55;
+    color: var(--white); font-family: var(--font);
+    font-size: 0.8rem; letter-spacing: 2px;
+    padding: 8px 24px; border-radius: 6px;
+    cursor: pointer; transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--teal); color: var(--teal); box-shadow: var(--glow-teal); }
+  .nav-btn:disabled { opacity: 0.25; cursor: default; }
+  .nav-hint { font-family: var(--font); font-size: 0.62rem; color: #2a3355; letter-spacing: 2px; }
+  .step-dots { display: flex; gap: 6px; align-items: center; }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #1a1a44; transition: all 0.3s; cursor: pointer;
+  }
+  .dot.done { background: var(--green); }
+  .dot.current { background: var(--teal); box-shadow: var(--glow-teal); transform: scale(1.4); }
+  .dot.checkpoint-dot { border: 1px solid var(--purple); }
+
+  /* ── TRANSITIONS ── */
+  .fade-in { animation: fadeIn 0.4s ease forwards; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="header-title">🎮 Game Design Folio — Where Are We?</div>
+    <div class="header-sub">Year 8 &amp; 9 Game Development Elective · Term 1 2026</div>
+  </div>
+  <div class="header-right">
+    <div class="week-badge" id="weekBadge">WEEK 6</div>
+    <div class="checkpoint-badge" id="cp1Badge">✦ CP1 05 Mar</div>
+    <div class="checkpoint-badge" id="cp2Badge">✦ CP2 12 Mar</div>
+    <div class="checkpoint-badge" id="cp3Badge">✦ CP3 19 Mar</div>
+  </div>
+</header>
+
+<main>
+  <!-- LEFT: Done -->
+  <div class="side-panel left">
+    <div class="side-label done-label">✔ Done</div>
+    <div class="done-steps" id="doneSteps">
+      <div style="color: var(--dim); font-size: 0.78rem; font-style: italic; padding: 8px 4px;">Nothing yet — let's get started!</div>
+    </div>
+  </div>
+
+  <!-- CENTRE: Current -->
+  <div class="centre-panel" id="centrePanel">
+    <div class="step-counter">Step <span id="stepNum">1</span> of <span id="stepTotal">9</span></div>
+
+    <div class="checkpoint-announce" id="cpAnnounce"></div>
+
+    <div class="now-label" id="nowLabel">▶ NOW</div>
+
+    <div class="current-card" id="currentCard" data-slide="">
+      <span class="current-icon" id="currentIcon"></span>
+      <div class="current-name" id="currentName"></div>
+      <div class="current-desc" id="currentDesc"></div>
+      <div class="current-tips" id="currentTips"></div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-label">
+        <span>FOLIO PROGRESS</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Coming up -->
+  <div class="side-panel right">
+    <div class="side-label next-label">⟩ Coming Up</div>
+    <div class="next-steps" id="nextSteps">
+    </div>
+  </div>
+</main>
+
+<footer>
+  <button class="nav-btn" id="prevBtn" onclick="advance(-1)" disabled>◀ PREV</button>
+  <div class="step-dots" id="stepDots"></div>
+  <button class="nav-btn" id="nextBtn" onclick="advance(1)">NEXT ▶</button>
+  <div class="nav-hint">← → arrow keys also work</div>
+</footer>
+
+<script>
+const STEPS = [
+  {
+    id: 0,
+    name: "Choose Your Stakeholder",
+    icon: "🎮",
+    slide: "SLIDE 2 / 10",
+    week: "WEEK 6",
+    desc: "Pick ONE persona — Competitive Teen eSports Player, Busy Working Parent, or Retired Puzzle Enthusiast. Write who they are, when they play, what device they use, and what they enjoy.",
+    tips: ["Slide 2 in your folio", "Delete the HINT box when done", "Think: age · lifestyle · device · play style"],
+    colour: "#00e5cc",
+    glow: "0 0 30px #00e5ccaa, 0 0 80px #00e5cc44",
+    bgGlow: "#00e5cc22",
+    checkpoint: null,
+  },
+  {
+    id: 1,
+    name: "Define Design Criteria",
+    icon: "📋",
+    slide: "SLIDE 3 / 10",
+    week: "WEEK 6",
+    desc: "Write 3–5 design criteria your game MUST meet. These are based on your stakeholder's needs — you'll use them later to judge your ideas.",
+    tips: ["Slide 3 in your folio", "Examples: Short sessions · Relaxing · Challenging · Easy controls", "Checkpoint 1 due today (05 Mar)"],
+    colour: "#00e5cc",
+    glow: "0 0 30px #00e5ccaa, 0 0 80px #00e5cc44",
+    bgGlow: "#00e5cc22",
+    checkpoint: { label: "✦ CHECKPOINT 1 — Due Today (05 Mar)", bg: "#001a18", border: "#00e5cc", colour: "#00e5cc", glow: "var(--glow-teal)" },
+  },
+  {
+    id: 2,
+    name: "Write User Stories",
+    icon: "📖",
+    slide: "SLIDE 4 / 10",
+    week: "WEEK 7",
+    desc: "Write at least TWO user stories. Use the format: As a [stakeholder]… I want to [do something]… So that [benefit or outcome].",
+    tips: ["Slide 4 in your folio", "2 stories minimum", "Think from your stakeholder's point of view"],
+    colour: "#ff4da6",
+    glow: "0 0 30px #ff4da6aa, 0 0 80px #ff4da644",
+    bgGlow: "#ff4da622",
+    checkpoint: null,
+  },
+  {
+    id: 3,
+    name: "Research Existing Games",
+    icon: "🔍",
+    slide: "SLIDE 5 / 10",
+    week: "WEEK 7",
+    desc: "Research TWO casual games with similar mechanics to your idea. Include screenshots and explain how their design influences the player experience.",
+    tips: ["Slide 5 in your folio", "2 games minimum", "Explain: what makes it fun? what does the player do?"],
+    colour: "#ff4da6",
+    glow: "0 0 30px #ff4da6aa, 0 0 80px #ff4da644",
+    bgGlow: "#ff4da622",
+    checkpoint: null,
+  },
+  {
+    id: 4,
+    name: "Brainstorm Game Ideas",
+    icon: "💡",
+    slide: "SLIDE 6 / 10",
+    week: "WEEK 7",
+    desc: "Generate MULTIPLE game ideas — at least three. Include quick sketches, short descriptions, and different mechanics. Quantity matters here — explore widely!",
+    tips: ["Slide 6 in your folio", "3 ideas minimum", "Sketches + description + mechanic for each"],
+    colour: "#ffd700",
+    glow: "0 0 30px #ffd700aa, 0 0 80px #ffd70044",
+    bgGlow: "#ffd70022",
+    checkpoint: null,
+  },
+  {
+    id: 5,
+    name: "Evaluate Your Ideas",
+    icon: "⚖️",
+    slide: "SLIDE 7 / 10",
+    week: "WEEK 7",
+    desc: "Compare all your ideas against your design criteria using the table. Then choose ONE idea and justify WHY it best fits your stakeholder. This is a key part of the rubric!",
+    tips: ["Slide 7 in your folio", "Use the comparison table", "Explain your decision clearly"],
+    colour: "#ffd700",
+    glow: "0 0 30px #ffd700aa, 0 0 80px #ffd70044",
+    bgGlow: "#ffd70022",
+    checkpoint: null,
+  },
+  {
+    id: 6,
+    name: "Design Gameplay Algorithm",
+    icon: "📊",
+    slide: "SLIDE 8 / 10",
+    week: "WEEK 7",
+    desc: "Design a key gameplay mechanic using a FLOWCHART or PSEUDOCODE. Explain what it does, how it works step by step, and how it connects to your stakeholder's needs.",
+    tips: ["Slide 8 in your folio", "Flowchart OR pseudocode", "Checkpoint 2 due today (12 Mar)"],
+    colour: "#ff8c42",
+    glow: "0 0 30px #ff8c42aa, 0 0 80px #ff8c4244",
+    bgGlow: "#ff8c4222",
+    checkpoint: { label: "✦ CHECKPOINT 2 — Due Today (12 Mar)", bg: "#100a00", border: "#ff8c42", colour: "#ff8c42", glow: "var(--glow-yellow)" },
+  },
+  {
+    id: 7,
+    name: "Game Design Visualisation",
+    icon: "🎨",
+    slide: "SLIDE 9 / 10",
+    week: "WEEK 8",
+    desc: "Create visuals of your game — wireframes, level sketches, or gameplay diagrams. Label key parts: player controls, obstacles, scoring, level layout, and how the player progresses.",
+    tips: ["Slide 9 in your folio", "Wireframes · Sketches · Diagrams", "Label everything with annotations"],
+    colour: "#c084fc",
+    glow: "0 0 30px #c084fcaa, 0 0 80px #c084fc44",
+    bgGlow: "#c084fc22",
+    checkpoint: null,
+  },
+  {
+    id: 8,
+    name: "Feasibility in Unity",
+    icon: "🚀",
+    slide: "SLIDE 10 / 10",
+    week: "WEEK 8",
+    desc: "Explain why your game can realistically be built in Unity and exported as a WebGL game. Cover: controls suitable for browser, mechanics achievable for a student project, scope appropriate for a 2D casual game.",
+    tips: ["Slide 10 in your folio", "Controls · Mechanics · Scope", "Final submission due 19 Mar!"],
+    colour: "#39e75f",
+    glow: "0 0 30px #39e75faa, 0 0 80px #39e75f44",
+    bgGlow: "#39e75f22",
+    checkpoint: { label: "✦ CHECKPOINT 3 — FINAL SUBMISSION (19 Mar)", bg: "#001a06", border: "#39e75f", colour: "#39e75f", glow: "var(--glow-green)" },
+  },
+];
+
+// Checkpoint step IDs (shown in header)
+const CP_STEPS = { 1: 1, 2: 6, 3: 8 };
+
+let current = 0;
+
+function advance(dir) {
+  const next = current + dir;
+  if (next < 0 || next >= STEPS.length) return;
+  current = next;
+  render();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') advance(1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') advance(-1);
+});
+
+function render() {
+  const step = STEPS[current];
+
+  // ── CSS vars for colour ──
+  document.documentElement.style.setProperty('--current-colour', step.colour);
+  document.documentElement.style.setProperty('--current-box-shadow', step.glow);
+  document.documentElement.style.setProperty('--current-glow', step.bgGlow);
+
+  // ── Header badges ──
+  document.getElementById('weekBadge').textContent = step.week;
+  for (let i = 1; i <= 3; i++) {
+    const badge = document.getElementById(`cp${i}Badge`);
+    const cpStep = CP_STEPS[i];
+    if (current >= cpStep) {
+      badge.className = 'checkpoint-badge active';
+    } else {
+      badge.className = 'checkpoint-badge inactive';
+    }
+  }
+
+  // ── Step counter ──
+  document.getElementById('stepNum').textContent = current + 1;
+  document.getElementById('stepTotal').textContent = STEPS.length;
+
+  // ── NOW label ──
+  const nowLabel = document.getElementById('nowLabel');
+  nowLabel.style.color = step.colour;
+  nowLabel.style.border = `1px solid ${step.colour}`;
+  nowLabel.style.textShadow = `0 0 10px ${step.colour}88`;
+
+  // ── Checkpoint announce ──
+  const cpEl = document.getElementById('cpAnnounce');
+  if (step.checkpoint) {
+    cpEl.textContent = step.checkpoint.label;
+    cpEl.style.color = step.checkpoint.colour;
+    cpEl.style.border = `1px solid ${step.checkpoint.border}`;
+    cpEl.style.background = step.checkpoint.bg;
+    cpEl.style.textShadow = `0 0 8px ${step.checkpoint.colour}88`;
+    cpEl.classList.add('visible');
+  } else {
+    cpEl.classList.remove('visible');
+  }
+
+  // ── Current card ──
+  document.getElementById('currentCard').setAttribute('data-slide', step.slide);
+  document.getElementById('currentCard').style.borderColor = step.colour;
+  document.getElementById('currentCard').style.boxShadow = step.glow;
+  document.getElementById('currentIcon').textContent = step.icon;
+  document.getElementById('currentName').textContent = step.name;
+  document.getElementById('currentDesc').textContent = step.desc;
+
+  const tipsEl = document.getElementById('currentTips');
+  tipsEl.innerHTML = step.tips.map(t => `<span class="tip-chip" style="border-color:${step.colour}33; color:${step.colour}99;">${t}</span>`).join('');
+
+  // Add fade-in animation
+  const card = document.getElementById('currentCard');
+  card.classList.remove('fade-in');
+  void card.offsetWidth;
+  card.classList.add('fade-in');
+
+  // ── DONE steps (left panel) ──
+  const doneEl = document.getElementById('doneSteps');
+  if (current === 0) {
+    doneEl.innerHTML = `<div style="color:var(--dim); font-size:0.78rem; font-style:italic; padding:8px 4px;">Nothing yet — let's get started!</div>`;
+  } else {
+    const doneSteps = STEPS.slice(0, current);
+    let html = '';
+    doneSteps.forEach((s, i) => {
+      // Insert checkpoint divider
+      if (i > 0 && Object.values(CP_STEPS).includes(i)) {
+        const cpNum = Object.keys(CP_STEPS).find(k => CP_STEPS[k] === i);
+        html += `<div class="cp-divider done-cp">CP${cpNum} ✔</div>`;
+      }
+      html += `
+        <div class="done-step" style="border-color:${s.colour}22;">
+          <span class="icon">${s.icon}</span>
+          <div class="text">
+            <div class="step-name" style="color:${s.colour}88;">${s.name}</div>
+            <div class="step-slide">${s.slide}</div>
+          </div>
+          <span class="done-check">✔</span>
+        </div>`;
+    });
+    doneEl.innerHTML = html;
+  }
+
+  // ── NEXT steps (right panel) ──
+  const nextEl = document.getElementById('nextSteps');
+  const upcoming = STEPS.slice(current + 1);
+  if (upcoming.length === 0) {
+    nextEl.innerHTML = `<div style="color:var(--green); font-size:0.88rem; font-weight:bold; padding:8px 4px; text-shadow:var(--glow-green);">🎉 Folio Complete!<br><span style="font-size:0.75rem; color:var(--dim); font-weight:normal;">Upload to Microsoft Teams ✔</span></div>`;
+  } else {
+    let html = '';
+    upcoming.forEach((s, i) => {
+      if (Object.values(CP_STEPS).includes(current + 1 + i)) {
+        const cpNum = Object.keys(CP_STEPS).find(k => CP_STEPS[k] === (current + 1 + i));
+        html += `<div class="cp-divider" style="color:${s.colour}; opacity:0.5;">CP${cpNum} ahead</div>`;
+      }
+      const isImmediate = i === 0;
+      html += `
+        <div class="next-step ${isImmediate ? 'immediate' : ''}" style="${isImmediate ? `border-color:${s.colour}44; background:#0c0c1e` : ''}">
+          <span class="icon">${s.icon}</span>
+          <div class="text">
+            <div class="step-name" style="${isImmediate ? `color:${s.colour};` : ''}">${s.name}</div>
+            <div class="step-slide" style="${isImmediate ? `color:${s.colour}55;` : ''}">${s.slide}</div>
+          </div>
+          ${isImmediate ? `<span class="next-soon" style="color:${s.colour};">NEXT</span>` : ''}
+        </div>`;
+    });
+    nextEl.innerHTML = html;
+  }
+
+  // ── Dots ──
+  const dotsEl = document.getElementById('stepDots');
+  dotsEl.innerHTML = STEPS.map((s, i) => {
+    let cls = 'dot';
+    if (i < current) cls += ' done';
+    if (i === current) cls += ' current';
+    if (Object.values(CP_STEPS).includes(i)) cls += ' checkpoint-dot';
+    return `<div class="${cls}" onclick="jumpTo(${i})" title="${s.name}" style="${i === current ? `background:${s.colour}; box-shadow: 0 0 10px ${s.colour}88;` : i < current ? 'background:var(--green);' : ''}"></div>`;
+  }).join('');
+
+  // ── Progress bar ──
+  const pct = Math.round((current / (STEPS.length - 1)) * 100);
+  document.getElementById('progressPct').textContent = pct + '%';
+  const fill = document.getElementById('progressFill');
+  fill.style.width = pct + '%';
+  fill.style.background = `linear-gradient(90deg, var(--green), ${step.colour})`;
+
+  // ── Nav buttons ──
+  document.getElementById('prevBtn').disabled = current === 0;
+  document.getElementById('nextBtn').disabled = current === STEPS.length - 1;
+  if (current === STEPS.length - 1) {
+    document.getElementById('nextBtn').textContent = '✔ DONE';
+  } else {
+    document.getElementById('nextBtn').textContent = 'NEXT ▶';
+  }
+}
+
+function jumpTo(i) {
+  current = i;
+  render();
+}
+
+// Init
+render();
+</script>
+</body>
+</html>

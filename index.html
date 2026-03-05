@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr Beveridge — Classroom Displays</title>
+<style>
+  :root {
+    --bg: #0a0a18;
+    --panel: #10102a;
+    --teal: #00e5cc;
+    --pink: #ff4da6;
+    --yellow: #ffd700;
+    --orange: #ff8c42;
+    --blue: #4d9fff;
+    --green: #39e75f;
+    --purple: #c084fc;
+    --white: #e8f0ff;
+    --dim: #6677aa;
+    --font: 'Courier New', Courier, monospace;
+    --sans: Arial, Helvetica, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--sans);
+    min-height: 100vh;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 6px);
+    pointer-events: none; z-index: 9999;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 60px 32px 48px;
+    background: radial-gradient(ellipse at 30% 50%, #00e5cc0a 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, #ff4da60a 0%, transparent 60%),
+                var(--bg);
+    border-bottom: 1px solid #1e1e44;
+  }
+  .hero-eyebrow {
+    font-family: var(--font); font-size: 0.72rem; letter-spacing: 4px;
+    color: var(--dim); text-transform: uppercase; margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: var(--font); font-size: clamp(1.8rem, 4vw, 3rem);
+    letter-spacing: 3px; color: var(--teal);
+    text-shadow: 0 0 20px #00e5ccaa, 0 0 60px #00e5cc33;
+    margin-bottom: 10px;
+  }
+  .hero .sub {
+    font-size: 1rem; color: var(--dim); letter-spacing: 1px; margin-bottom: 4px;
+  }
+  .hero .school {
+    font-family: var(--font); font-size: 0.75rem; color: var(--pink);
+    letter-spacing: 3px; text-shadow: 0 0 10px #ff4da666;
+  }
+
+  /* ── GRID ── */
+  .grid-section {
+    max-width: 1100px; margin: 0 auto;
+    padding: 48px 28px 64px;
+  }
+  .grid-label {
+    font-family: var(--font); font-size: 0.65rem; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--dim);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .grid-label::after { content: ''; flex: 1; height: 1px; background: #1e2255; }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+
+  /* ── DISPLAY CARD ── */
+  .display-card {
+    background: var(--panel);
+    border: 1px solid #1e1e44;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex; flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.3s, border-color 0.3s;
+    position: relative;
+  }
+  .display-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent);
+  }
+  .display-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 8px 40px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  .card-preview {
+    height: 100px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    background: radial-gradient(ellipse at center, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 70%);
+    border-bottom: 1px solid #1e1e44;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-preview::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(0,0,0,0.06) 4px, rgba(0,0,0,0.06) 8px);
+  }
+  .card-body { padding: 20px 20px 18px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .card-tag {
+    font-family: var(--font); font-size: 0.6rem; letter-spacing: 2px;
+    color: var(--accent); text-transform: uppercase; text-shadow: 0 0 6px currentColor;
+  }
+  .card-name { font-size: 1rem; font-weight: bold; color: var(--white); line-height: 1.3; }
+  .card-desc { font-size: 0.82rem; color: var(--dim); line-height: 1.55; flex: 1; }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px; padding-top: 10px; border-top: 1px solid #1a1a38;
+  }
+  .card-class {
+    font-family: var(--font); font-size: 0.6rem; letter-spacing: 1px;
+    color: #3a3a66; text-transform: uppercase;
+  }
+  .card-arrow {
+    font-size: 0.8rem; color: var(--accent); opacity: 0.6;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .display-card:hover .card-arrow { opacity: 1; transform: translateX(4px); }
+
+  /* ── INTERACTIVE BADGE ── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--font); font-size: 0.58rem; letter-spacing: 1px;
+    padding: 2px 8px; border-radius: 10px; text-transform: uppercase;
+  }
+  .badge.interactive { background: #001a18; border: 1px solid var(--teal); color: var(--teal); }
+  .badge.reference { background: #1a0022; border: 1px solid var(--purple); color: var(--purple); }
+  .badge.hints { background: #0a1200; border: 1px solid var(--yellow); color: var(--yellow); }
+  .badge.answers { background: #0a0018; border: 1px solid var(--blue); color: var(--blue); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 24px;
+    border-top: 1px solid #1a1a38;
+    font-family: var(--font); font-size: 0.65rem;
+    color: #2a3355; letter-spacing: 2px;
+  }
+  footer a { color: var(--teal); text-decoration: none; }
+  footer a:hover { text-shadow: 0 0 8px var(--teal); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">St Peters Lutheran College Springfield</div>
+  <h1>CLASSROOM DISPLAYS</h1>
+  <p class="sub">Mr Beveridge · Technologies & Game Development</p>
+  <p class="school">[ OPEN A DISPLAY → GO FULLSCREEN (F11) → DONE ]</p>
+</div>
+
+<div class="grid-section">
+
+  <!-- Year 7 Technologies -->
+  <div class="grid-label">Year 7 Technologies — Term 1 2026</div>
+  <div class="card-grid">
+
+    <a class="display-card" href="GameDev_Progress_Display.html" style="--accent: var(--pink);">
+      <div class="card-preview">🎮</div>
+      <div class="card-body">
+        <div class="card-tag">Game Development</div>
+        <div class="card-name">Game Design Folio — Where Are We?</div>
+        <div class="card-desc">Interactive step-by-step progress tracker for the Game Design Folio. Advance through each stage with arrow keys. Shows done / now / coming up with checkpoint markers.</div>
+        <div class="card-footer">
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="badge interactive">⟳ Interactive</span>
+            <span class="card-class">Yr 8 &amp; 9 Game Dev</span>
+          </div>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="display-card" href="Classroom_Hints_Display_Year7_Tech_Exam.html" style="--accent: var(--purple);">
+      <div class="card-preview">💡</div>
+      <div class="card-body">
+        <div class="card-tag">Exam Support</div>
+        <div class="card-name">Year 7 Exam — Hints &amp; Reference</div>
+        <div class="card-desc">Scaffolding and vocabulary for the Technologies exam — Python commands, pseudocode keywords, binary rules, algorithm hints. No answers — students still do the thinking.</div>
+        <div class="card-footer">
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="badge hints">◦ Hints only</span>
+            <span class="card-class">Yr 7 Technologies</span>
+          </div>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="display-card" href="Classroom_Reference_Display_Year7_Tech_Exam.html" style="--accent: var(--teal);">
+      <div class="card-preview">✅</div>
+      <div class="card-body">
+        <div class="card-tag">Answer Key</div>
+        <div class="card-name">Year 7 Exam — Full Reference</div>
+        <div class="card-desc">Complete model answers for all questions — binary grid solution, Python code, trace table, pseudocode algorithm, and notification logic. Teacher use / post-exam review.</div>
+        <div class="card-footer">
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <span class="badge answers">★ Full answers</span>
+            <span class="card-class">Yr 7 Technologies</span>
+          </div>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Add more section - placeholder style -->
+  <div class="grid-label">More displays coming soon</div>
+  <div style="
+    border: 1px dashed #1e2255; border-radius: 12px;
+    padding: 32px; text-align: center;
+    color: var(--dim); font-size: 0.85rem; line-height: 1.7;
+  ">
+    <div style="font-size: 2rem; margin-bottom: 12px; opacity: 0.3;">＋</div>
+    Drop new <span style="font-family:var(--font); color:#3a3a66;">.html</span> files into this folder and add a card above to link to them.
+  </div>
+
+</div>
+
+<footer>
+  MR BEVERIDGE · ST PETERS LUTHERAN COLLEGE SPRINGFIELD ·
+  <a href="https://github.com" target="_blank">HOSTED ON GITHUB PAGES</a>
+</footer>
+
+</body>
+</html>

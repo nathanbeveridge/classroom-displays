@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Year 7 Technologies — Exam Hints &amp; Reference</title>
+<style>
+  :root {
+    --bg: #0d0d1a;
+    --panel: #12122a;
+    --panel2: #1a1a35;
+    --teal: #00e5cc;
+    --pink: #ff4da6;
+    --yellow: #ffd700;
+    --orange: #ff8c42;
+    --blue: #4d9fff;
+    --green: #39e75f;
+    --red: #ff4d4d;
+    --purple: #b04dff;
+    --white: #e8f0ff;
+    --dimwhite: #8899bb;
+    --glow-teal: 0 0 12px #00e5cc88, 0 0 30px #00e5cc33;
+    --glow-pink: 0 0 12px #ff4da688, 0 0 30px #ff4da633;
+    --glow-yellow: 0 0 12px #ffd70088, 0 0 30px #ffd70033;
+    --glow-purple: 0 0 12px #b04dff88, 0 0 30px #b04dff33;
+    --font: 'Courier New', Courier, monospace;
+    --sans: Arial, Helvetica, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.10) 2px, rgba(0,0,0,0.10) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--panel);
+    border-bottom: 2px solid var(--purple);
+    padding: 10px 24px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px #b04dff44;
+  }
+  nav .logo { font-family: var(--font); font-size: 1rem; color: var(--purple); text-shadow: var(--glow-purple); letter-spacing: 2px; }
+  nav .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+  nav a { color: var(--dimwhite); text-decoration: none; font-size: 0.78rem; padding: 4px 10px; border: 1px solid #334; border-radius: 4px; transition: all 0.2s; font-family: var(--font); }
+  nav a:hover { color: var(--purple); border-color: var(--purple); box-shadow: var(--glow-purple); }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center; padding: 48px 32px 40px;
+    background: linear-gradient(180deg, #0d0d1a 0%, #12122a 100%);
+    border-bottom: 2px solid var(--purple);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, #b04dff11 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, #00e5cc11 0%, transparent 60%);
+  }
+  .hero h1 { font-family: var(--font); font-size: clamp(1.4rem, 3.5vw, 2.4rem); letter-spacing: 4px; color: var(--purple); text-shadow: var(--glow-purple); margin-bottom: 10px; position: relative; }
+  .hero .sub { font-size: 0.95rem; color: var(--dimwhite); letter-spacing: 2px; position: relative; margin-bottom: 6px; }
+  .hero .date { font-family: var(--font); font-size: 0.8rem; color: var(--teal); letter-spacing: 3px; text-shadow: var(--glow-teal); position: relative; margin-bottom: 16px; }
+  .hero .tagline {
+    display: inline-block;
+    border: 1px solid var(--purple); border-radius: 20px;
+    padding: 6px 20px; font-family: var(--font); font-size: 0.75rem;
+    color: var(--purple); letter-spacing: 2px;
+    text-shadow: var(--glow-purple); position: relative;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 44px 32px 52px; border-bottom: 1px solid #1e2255; max-width: 1400px; margin: 0 auto; }
+
+  .section-title {
+    font-family: var(--font); font-size: 1.5rem; letter-spacing: 3px;
+    text-transform: uppercase; margin-bottom: 28px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .section-title .badge { font-size: 0.78rem; padding: 3px 10px; border-radius: 20px; letter-spacing: 1px; font-weight: bold; }
+  .section-title .line { flex: 1; height: 1px; background: linear-gradient(90deg, currentColor 0%, transparent 100%); opacity: 0.35; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--panel); border: 1px solid #2a2a55; border-radius: 8px;
+    padding: 20px 22px; position: relative; overflow: hidden; transition: transform 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent, var(--purple)); }
+  .card.teal { --accent: var(--teal); }
+  .card.pink { --accent: var(--pink); }
+  .card.yellow { --accent: var(--yellow); }
+  .card.orange { --accent: var(--orange); }
+  .card.blue { --accent: var(--blue); }
+  .card.green { --accent: var(--green); }
+  .card.purple { --accent: var(--purple); }
+
+  .card-label { font-family: var(--font); font-size: 0.65rem; color: var(--accent, var(--purple)); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; text-shadow: 0 0 8px currentColor; }
+  .card-title { font-size: 1.1rem; font-weight: bold; color: var(--white); margin-bottom: 10px; }
+  .card-body { font-size: 0.9rem; color: var(--dimwhite); line-height: 1.65; }
+
+  .card-grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); }
+  .card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: #080812; border: 1px solid #2a2a55;
+    border-left: 3px solid var(--accent, var(--purple));
+    border-radius: 6px; padding: 14px 16px;
+    font-family: var(--font); font-size: 0.88rem; line-height: 1.8; overflow-x: auto; margin: 10px 0;
+  }
+  .kw { color: var(--pink); font-weight: bold; }
+  .fn { color: var(--teal); }
+  .str { color: var(--yellow); }
+  .cmt { color: #5566aa; font-style: italic; }
+  .num { color: var(--orange); }
+  .indent-1 { padding-left: 2em; }
+  .indent-2 { padding-left: 4em; }
+  .blank { display: inline-block; width: 6em; border-bottom: 1px solid #5566aa; color: transparent; }
+
+  /* ── HINT BOX (question-mark style) ── */
+  .hint-box {
+    border: 1px dashed var(--accent, var(--purple));
+    border-radius: 8px; padding: 12px 16px;
+    background: #08080f; margin: 10px 0; position: relative;
+  }
+  .hint-box::before {
+    content: attr(data-label);
+    position: absolute; top: -10px; left: 12px;
+    background: var(--bg); padding: 0 8px;
+    font-family: var(--font); font-size: 0.62rem;
+    color: var(--accent, var(--purple)); letter-spacing: 2px;
+    text-transform: uppercase; text-shadow: 0 0 6px currentColor;
+  }
+  .hint-box p { font-size: 0.87rem; color: var(--dimwhite); line-height: 1.55; }
+  .hint-box p strong { color: var(--white); }
+
+  /* ── PROMPT QUESTION ── */
+  .think-q {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 1px solid #1e2255;
+  }
+  .think-q:last-child { border-bottom: none; }
+  .think-q .qmark {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent, var(--purple));
+    color: var(--bg); font-family: var(--font); font-size: 0.9rem; font-weight: bold;
+    display: flex; align-items: center; justify-content: center; margin-top: 2px;
+  }
+  .think-q .qtext { font-size: 0.88rem; color: var(--dimwhite); line-height: 1.5; }
+  .think-q .qtext strong { color: var(--white); }
+
+  /* ── KEYWORD CHIPS ── */
+  .kw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 9px; }
+  .kw-chip {
+    background: #080812; border: 1px solid var(--teal); border-radius: 6px;
+    padding: 9px 12px; font-family: var(--font); font-size: 0.95rem;
+    color: var(--teal); text-align: center; text-shadow: var(--glow-teal);
+    letter-spacing: 1px; transition: all 0.2s;
+  }
+  .kw-chip:hover { background: #0d2222; box-shadow: var(--glow-teal); }
+  .kw-chip.pink { border-color: var(--pink); color: var(--pink); text-shadow: var(--glow-pink); }
+  .kw-chip.pink:hover { background: #1a0022; }
+  .kw-chip.yellow { border-color: var(--yellow); color: var(--yellow); text-shadow: var(--glow-yellow); }
+  .kw-chip.yellow:hover { background: #1a1400; }
+  .kw-chip.purple { border-color: var(--purple); color: var(--purple); text-shadow: var(--glow-purple); }
+
+  /* ── COMMAND TABLE ── */
+  .ref-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  .ref-table th { background: #1a1a3a; color: var(--accent, var(--purple)); font-family: var(--font); font-size: 0.7rem; letter-spacing: 2px; padding: 9px 12px; text-align: left; border-bottom: 2px solid var(--accent, var(--purple)); text-transform: uppercase; }
+  .ref-table td { padding: 9px 12px; border-bottom: 1px solid #1e2255; color: var(--dimwhite); vertical-align: top; line-height: 1.5; }
+  .ref-table td:first-child { font-family: var(--font); color: var(--teal); white-space: nowrap; font-size: 0.82rem; }
+  .ref-table tr:hover td { background: #0d0d22; }
+  .ref-table td strong { color: var(--white); }
+
+  /* ── BLANK LED GRID ── */
+  .led-grid { display: inline-grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 12px; background: #05050f; border: 2px solid #2a2a55; border-radius: 8px; }
+  .led { width: 44px; height: 44px; border-radius: 50%; background: #1a1a2a; border: 1px solid #2a2a55; }
+
+  /* ── BINARY BIT ── */
+  .binary-row { display: flex; gap: 4px; align-items: center; font-family: var(--font); font-size: 1.05rem; margin: 6px 0; flex-wrap: wrap; }
+  .bit { padding: 4px 10px; border-radius: 4px; }
+  .bit-1 { color: var(--teal); background: #001a18; border: 1px solid var(--teal); text-shadow: var(--glow-teal); }
+  .bit-0 { color: #445; background: #080812; border: 1px solid #2a2a55; }
+  .bit-arrow { color: var(--dimwhite); margin: 0 8px; }
+  .bit-q { color: #445; background: #080812; border: 1px dashed #445; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; }
+
+  /* ── STEP COUNTER ── */
+  .algo-step { display: flex; gap: 14px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #1e2255; }
+  .algo-step:last-child { border-bottom: none; }
+  .step-num { background: var(--accent, var(--purple)); color: var(--bg); font-family: var(--font); font-size: 0.8rem; font-weight: bold; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-text { font-size: 0.88rem; color: var(--dimwhite); line-height: 1.5; }
+  .step-text strong { color: var(--white); }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .checklist li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 14px; background: #080812;
+    border: 1px solid #2a2a55; border-radius: 6px; font-size: 0.87rem; color: var(--dimwhite);
+  }
+  .checklist li .num { flex-shrink: 0; font-family: var(--font); color: var(--accent, var(--purple)); font-weight: bold; font-size: 1rem; width: 24px; }
+  .checklist li strong { color: var(--white); }
+
+  /* ── LOCKER DIAGRAM ── */
+  .locker-flow { display: flex; flex-direction: column; gap: 8px; }
+  .flow-row { display: flex; align-items: center; gap: 10px; font-size: 0.87rem; }
+  .flow-box { padding: 8px 14px; border-radius: 6px; font-family: var(--font); font-size: 0.8rem; letter-spacing: 1px; text-align: center; min-width: 130px; }
+  .flow-arrow { color: var(--dimwhite); font-size: 1.2rem; }
+  .flow-split { display: flex; gap: 10px; align-items: center; width: 100%; }
+
+  /* ── FILL-IN TRACE TABLE ── */
+  .trace-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  .trace-table th { background: #12122a; color: var(--pink); font-family: var(--font); font-size: 0.68rem; letter-spacing: 1px; padding: 8px 12px; border: 1px solid #2a2a55; text-transform: uppercase; }
+  .trace-table td { padding: 12px; border: 1px solid #2a2a55; color: var(--dimwhite); }
+  .trace-table td.given { color: var(--white); }
+  .trace-table td.blank-ans { background: #080812; border-bottom: 2px dashed #3a3a66; color: #2a2a55; font-family: var(--font); font-size: 0.75rem; text-align: center; }
+  .trace-table tr:nth-child(even) td { background: #0d0d1e; }
+  .trace-table tr:nth-child(even) td.blank-ans { background: #080812; }
+
+  /* ── INFO BOX ── */
+  .info-box { border: 1px solid var(--accent, var(--purple)); border-radius: 8px; padding: 12px 16px; background: #05050f; margin: 8px 0; position: relative; }
+  .info-box::before { content: attr(data-label); position: absolute; top: -10px; left: 12px; background: var(--bg); padding: 0 8px; font-family: var(--font); font-size: 0.62rem; color: var(--accent, var(--purple)); letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 6px currentColor; }
+
+  footer { text-align: center; padding: 20px; font-family: var(--font); font-size: 0.68rem; color: #334; letter-spacing: 2px; border-top: 1px solid #1e2255; }
+
+  @media (max-width: 900px) { .card-grid-3 { grid-template-columns: 1fr 1fr; } .led { width: 36px; height: 36px; } }
+  @media (max-width: 600px) { .card-grid-3, .card-grid-2 { grid-template-columns: 1fr; } section { padding: 28px 14px 36px; } }
+  @media print { body::after { display: none; } nav { position: static; } section { page-break-inside: avoid; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">[ TECH7 // HINTS ]</div>
+  <div class="nav-links">
+    <a href="#q1">Q1 Explain</a>
+    <a href="#q2">Q2 Python</a>
+    <a href="#q3">Q3 Trace</a>
+    <a href="#q4">Q4 Binary</a>
+    <a href="#q5q6">Q5–Q6 Alarm</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>YEAR 7 TECHNOLOGIES // HINT SHEET</h1>
+  <p class="sub">St Peters Lutheran College Springfield &nbsp;·&nbsp; Classes 7S · 7T · 7U</p>
+  <p class="date">[ 06 · 03 · 2026 ]</p>
+  <div class="tagline">USE THESE HINTS — BUT WRITE YOUR OWN ANSWERS ✦</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- Q1 — EXPLAIN THE ALGORITHM -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="q1">
+  <div class="section-title" style="color: var(--teal);">
+    <span class="badge" style="background:var(--teal); color:#000;">Q1</span>
+    Explain the Algorithm
+    <span class="line" style="color:var(--teal);"></span>
+  </div>
+
+  <div class="card-grid card-grid-2">
+
+    <div class="card teal">
+      <div class="card-label">What the algorithm shows</div>
+      <div class="card-title">Read these carefully before explaining</div>
+      <div class="code-block">
+<span style="color:var(--pink)">WHILE</span> button A is pressed <span style="color:var(--pink)">DO</span><br>
+<span class="indent-1">show image PAWPRINT</span><br>
+<span style="color:var(--pink)">END WHILE</span><br>
+clear screen
+      </div>
+      <div class="hint-box" data-label="What does WHILE mean?" style="--accent:var(--teal);">
+        <p>A <strong>WHILE loop</strong> keeps repeating as long as its condition stays true.<br>
+        Ask yourself: what is the condition here? When does the loop run? When does it stop?</p>
+      </div>
+      <div class="hint-box" data-label="What happens after END WHILE?" style="--accent:var(--teal);">
+        <p>The next line after the loop runs when the condition becomes false. What does <strong>clear screen</strong> do to the LEDs?</p>
+      </div>
+    </div>
+
+    <div class="card teal">
+      <div class="card-label">Think about these questions</div>
+      <div class="card-title">Use them to structure your 2–3 sentence answer</div>
+      <div class="think-q">
+        <div class="qmark">?</div>
+        <div class="qtext"><strong>While Button A is held…</strong> what is showing on the micro:bit screen?</div>
+      </div>
+      <div class="think-q">
+        <div class="qmark">?</div>
+        <div class="qtext"><strong>When the button is released…</strong> the loop condition becomes false. What happens next?</div>
+      </div>
+      <div class="think-q">
+        <div class="qmark">?</div>
+        <div class="qtext">Does the program run <strong>once</strong>, or does it keep going? How do you know?</div>
+      </div>
+      <div class="think-q">
+        <div class="qmark">?</div>
+        <div class="qtext">Can you use the words: <em style="color:var(--teal)">loop, pressed, image, clears</em> in your answer?</div>
+      </div>
+      <div style="margin-top:14px; padding:10px 12px; border:1px dashed #2a4a4a; border-radius:6px; background:#08080f;">
+        <span style="font-family:var(--font); font-size:0.68rem; color:var(--teal); letter-spacing:2px;">YOUR ANSWER SHOULD COVER:</span>
+        <div style="margin-top:8px; display:flex; flex-direction:column; gap:4px;">
+          <div style="font-size:0.82rem; color:var(--dimwhite);">◦ What happens <strong style="color:var(--white)">while</strong> the button is pressed</div>
+          <div style="font-size:0.82rem; color:var(--dimwhite);">◦ What happens <strong style="color:var(--white)">after</strong> the button is released</div>
+          <div style="font-size:0.82rem; color:var(--dimwhite);">◦ Mention the <strong style="color:var(--white)">loop</strong> in your explanation</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- Q2 — PYTHON CODE -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="q2">
+  <div class="section-title" style="color: var(--blue);">
+    <span class="badge" style="background:var(--blue);">Q2</span>
+    Write Python Code
+    <span class="line" style="color:var(--blue);"></span>
+  </div>
+
+  <p style="color:var(--dimwhite); font-size:0.88rem; margin-bottom:22px;">Use these commands — you used all of them in micro:bit classroom. Combine them to write the program.</p>
+
+  <div class="card-grid card-grid-2">
+
+    <div class="card blue">
+      <div class="card-label">The commands you need</div>
+      <div class="card-title">micro:bit Python Cheat Sheet</div>
+      <table class="ref-table" style="--accent:var(--blue);">
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr>
+          <td>from microbit import *</td>
+          <td><strong>Always first line.</strong> Loads all micro:bit tools.</td>
+        </tr>
+        <tr>
+          <td>while True:</td>
+          <td>Starts a loop that <strong>runs forever.</strong> Code inside must be indented.</td>
+        </tr>
+        <tr>
+          <td>if ...:</td>
+          <td>Makes a <strong>decision.</strong> Code inside runs only if the condition is true.</td>
+        </tr>
+        <tr>
+          <td>else:</td>
+          <td>Runs when the <strong>if</strong> condition is false — the "otherwise" option.</td>
+        </tr>
+        <tr>
+          <td>button_a.is_pressed()</td>
+          <td>Is Button A being pressed <strong>right now</strong>? True or False.</td>
+        </tr>
+        <tr>
+          <td>display.show(Image.X)</td>
+          <td><strong>Show an image</strong> on the LED grid. Replace X with image name.</td>
+        </tr>
+        <tr>
+          <td>display.clear()</td>
+          <td><strong>Turn off all LEDs.</strong> Blank screen.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card blue">
+      <div class="card-label">Code Structure Hint</div>
+      <div class="card-title">Your program needs these parts — in order</div>
+      <div class="algo-step" style="--accent:var(--blue);">
+        <div class="step-num" style="background:var(--blue);">1</div>
+        <div class="step-text">Import line <em style="color:#5566aa;">(the one that loads micro:bit)</em></div>
+      </div>
+      <div class="algo-step" style="--accent:var(--blue);">
+        <div class="step-num" style="background:var(--blue);">2</div>
+        <div class="step-text">Start a loop that <strong>runs forever</strong></div>
+      </div>
+      <div class="algo-step" style="--accent:var(--blue);">
+        <div class="step-num" style="background:var(--blue);">3</div>
+        <div class="step-text"><strong>Inside the loop:</strong> check if Button A is pressed</div>
+      </div>
+      <div class="algo-step" style="--accent:var(--blue);">
+        <div class="step-num" style="background:var(--blue);">4</div>
+        <div class="step-text">If pressed → <strong>show an image</strong></div>
+      </div>
+      <div class="algo-step" style="--accent:var(--blue);">
+        <div class="step-num" style="background:var(--blue);">5</div>
+        <div class="step-text">Else (not pressed) → <strong>clear the screen</strong></div>
+      </div>
+      <div class="hint-box" data-label="Indentation reminder" style="--accent:var(--blue); margin-top:14px;">
+        <p>Everything inside <span style="font-family:monospace; color:var(--pink)">while True:</span> gets <strong>4 spaces</strong> of indent.<br>
+        Everything inside <span style="font-family:monospace; color:var(--pink)">if</span> and <span style="font-family:monospace; color:var(--pink)">else</span> gets <strong>8 spaces</strong> (4 more).</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- Q3 — TRACE TABLE -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="q3">
+  <div class="section-title" style="color: var(--pink);">
+    <span class="badge" style="background:var(--pink);">Q3</span>
+    Algorithm Trace Table
+    <span class="line" style="color:var(--pink);"></span>
+  </div>
+
+  <div class="card-grid card-grid-2">
+
+    <div class="card pink">
+      <div class="card-label">How to Trace an Algorithm</div>
+      <div class="card-title">Follow these steps</div>
+      <div class="algo-step" style="--accent:var(--pink);">
+        <div class="step-num" style="background:var(--pink);">1</div>
+        <div class="step-text">Read the algorithm top to bottom, one line at a time</div>
+      </div>
+      <div class="algo-step" style="--accent:var(--pink);">
+        <div class="step-num" style="background:var(--pink);">2</div>
+        <div class="step-text">For each step: look at the <strong>Button A State</strong> given — is it pressed or not?</div>
+      </div>
+      <div class="algo-step" style="--accent:var(--pink);">
+        <div class="step-num" style="background:var(--pink);">3</div>
+        <div class="step-text">Ask: is the condition true? → go into the loop. Is it false? → skip to after END WHILE</div>
+      </div>
+      <div class="algo-step" style="--accent:var(--pink);">
+        <div class="step-num" style="background:var(--pink);">4</div>
+        <div class="step-text">Write what the <strong>micro:bit screen shows</strong> at that exact moment</div>
+      </div>
+      <div class="algo-step" style="--accent:var(--pink);">
+        <div class="step-num" style="background:var(--pink);">5</div>
+        <div class="step-text">Ask: does a <span style="font-family:monospace; color:var(--teal)">while True</span> loop ever stop on its own? 🤔</div>
+      </div>
+    </div>
+
+    <div class="card pink">
+      <div class="card-label">The Algorithm (for reference)</div>
+      <div class="card-title">Trace each step against this</div>
+      <div class="code-block" style="--accent:var(--pink);">
+<span style="color:var(--cmt); font-size:0.8rem;"># The program runs forever</span><br>
+<span style="color:var(--cmt); font-size:0.8rem;"># If Button A is pressed show a paw icon</span><br>
+<span style="color:var(--cmt); font-size:0.8rem;"># If Button A is not pressed show nothing</span>
+      </div>
+      <div class="hint-box" data-label="Loop Running?" style="--accent:var(--pink);">
+        <p>This program uses a <strong>forever loop</strong> — does it ever stop running while the device is on?
+        Think carefully before you fill in that column for each step.</p>
+      </div>
+      <div class="hint-box" data-label="Output on micro:bit" style="--accent:var(--pink);">
+        <p>The output column is asking: <strong>what would you see on the LED screen</strong> at that exact moment?
+        Your two possible answers are: an image showing, or the screen being blank.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- Q4 — BINARY GRID -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="q4">
+  <div class="section-title" style="color: var(--yellow);">
+    <span class="badge" style="background:var(--yellow); color:#000;">Q4</span>
+    Draw from Binary
+    <span class="line" style="color:var(--yellow);"></span>
+  </div>
+
+  <div class="card-grid card-grid-2">
+
+    <div class="card yellow">
+      <div class="card-label">The Binary Rule</div>
+      <div class="card-title">Only two things to remember</div>
+      <div style="display:flex; gap:32px; margin:16px 0; flex-wrap:wrap; justify-content:center;">
+        <div style="text-align:center;">
+          <div style="width:60px; height:60px; border-radius:50%; background: radial-gradient(circle, #ffcc00 0%, #ff8800 60%); box-shadow:0 0 16px #ffd70088, 0 0 40px #ffd70033; margin:0 auto 10px;"></div>
+          <div style="font-family:var(--font); font-size:2rem; color:var(--yellow); text-shadow:var(--glow-yellow);">1</div>
+          <div style="font-size:0.85rem; color:var(--white); font-weight:bold; margin-top:4px;">LED ON</div>
+          <div style="font-size:0.78rem; color:var(--dimwhite);">Shade / fill the cell</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:60px; height:60px; border-radius:50%; background:#1a1a2a; border:2px solid #2a2a55; margin:0 auto 10px;"></div>
+          <div style="font-family:var(--font); font-size:2rem; color:#445;">0</div>
+          <div style="font-size:0.85rem; color:var(--white); font-weight:bold; margin-top:4px;">LED OFF</div>
+          <div style="font-size:0.78rem; color:var(--dimwhite);">Leave blank</div>
+        </div>
+      </div>
+      <div class="hint-box" data-label="How to read the string" style="--accent:var(--yellow);">
+        <p>The binary string has <strong>25 digits</strong> — one for each LED in the 5×5 grid.<br>
+        Split it into <strong>5 groups of 5</strong>. Each group is one row.<br>
+        Read left to right, top to bottom.</p>
+      </div>
+    </div>
+
+    <div class="card yellow">
+      <div class="card-label">Split the Binary String</div>
+      <div class="card-title">Separate it into rows first</div>
+      <div style="font-family:var(--font); font-size:0.75rem; color:var(--dimwhite); margin-bottom:12px; letter-spacing:1px;">THE BINARY STRING:</div>
+      <div style="font-family:var(--font); font-size:1.1rem; color:var(--yellow); text-shadow:var(--glow-yellow); letter-spacing:3px; margin-bottom:16px;">10101 · 11111 · 01110 · 11111 · 10101</div>
+      <div class="binary-row">
+        <span style="font-family:var(--font); font-size:0.72rem; color:var(--dimwhite); width:50px;">Row 1</span>
+        <span class="bit bit-1">1</span><span class="bit bit-0">0</span><span class="bit bit-1">1</span><span class="bit bit-0">0</span><span class="bit bit-1">1</span>
+        <span class="bit-arrow">→</span><span class="bit-q">which cells?</span>
+      </div>
+      <div class="binary-row">
+        <span style="font-family:var(--font); font-size:0.72rem; color:var(--dimwhite); width:50px;">Row 2</span>
+        <span class="bit bit-1">1</span><span class="bit bit-1">1</span><span class="bit bit-1">1</span><span class="bit bit-1">1</span><span class="bit bit-1">1</span>
+        <span class="bit-arrow">→</span><span class="bit-q">which cells?</span>
+      </div>
+      <div class="binary-row">
+        <span style="font-family:var(--font); font-size:0.72rem; color:var(--dimwhite); width:50px;">Row 3</span>
+        <span class="bit bit-0">0</span><span class="bit bit-1">1</span><span class="bit bit-1">1</span><span class="bit bit-1">1</span><span class="bit bit-0">0</span>
+        <span class="bit-arrow">→</span><span class="bit-q">which cells?</span>
+      </div>
+      <div class="binary-row">
+        <span style="font-family:var(--font); font-size:0.72rem; color:var(--dimwhite); width:50px;">Row 4</span>
+        <span class="bit bit-1">1</span><span class="bit bit-1">1</span><span class="bit bit-1">1</span><span class="bit bit-1">1</span><span class="bit bit-1">1</span>
+        <span class="bit-arrow">→</span><span class="bit-q">which cells?</span>
+      </div>
+      <div class="binary-row">
+        <span style="font-family:var(--font); font-size:0.72rem; color:var(--dimwhite); width:50px;">Row 5</span>
+        <span class="bit bit-1">1</span><span class="bit bit-0">0</span><span class="bit bit-1">1</span><span class="bit bit-0">0</span><span class="bit bit-1">1</span>
+        <span class="bit-arrow">→</span><span class="bit-q">which cells?</span>
+      </div>
+      <div style="margin-top:14px; font-size:0.8rem; color:var(--dimwhite);">💡 Hint: rows 1 and 5 are <strong style="color:var(--white)">identical</strong>. Rows 2 and 4 are also <strong style="color:var(--white)">identical</strong>. Does that help you check your work?</div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:20px; display:flex; gap:32px; align-items:flex-start; flex-wrap:wrap;">
+    <div>
+      <div style="font-family:var(--font); font-size:0.68rem; color:var(--dimwhite); letter-spacing:3px; margin-bottom:12px;">YOUR BLANK GRID — SHADE IN THE 1s:</div>
+      <div class="led-grid">
+        <!-- 25 blank LEDs -->
+        <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+        <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+        <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+        <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+        <div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div><div class="led"></div>
+      </div>
+    </div>
+    <div style="flex:1; min-width:240px;">
+      <div class="card" style="--accent:var(--yellow); max-width:400px;">
+        <div class="card-label">Stuck? Try this</div>
+        <div class="card-title">One row at a time</div>
+        <div class="card-body" style="font-size:0.85rem;">
+          Cover up everything except <strong>Row 1</strong>.<br>
+          Count: <strong>cell 1, cell 2, cell 3, cell 4, cell 5</strong>.<br>
+          Shade each cell where the digit is <strong style="color:var(--yellow)">1</strong>.<br>
+          Move to Row 2, and repeat.<br><br>
+          When you're done, step back — does the shape remind you of anything from this unit? 🐾
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- Q5 & Q6 — LOCKER ALARM -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="q5q6">
+  <div class="section-title" style="color: var(--orange);">
+    <span class="badge" style="background:var(--orange);">Q5 &amp; Q6</span>
+    Locker Alarm Pseudocode
+    <span class="line" style="color:var(--orange);"></span>
+  </div>
+
+  <div class="card-grid card-grid-2">
+
+    <!-- Scenario breakdown -->
+    <div class="card orange">
+      <div class="card-label">Understand the Scenario First</div>
+      <div class="card-title">What the locker alarm must do</div>
+      <div class="info-box" data-label="Door closed → dark inside" style="--accent:var(--green);">
+        <p>Light sensor reads a <strong>low value (150 or below)</strong> → locker is safe → show a <strong>tick symbol</strong></p>
+      </div>
+      <div class="info-box" data-label="Door open → light gets in" style="--accent:var(--red);">
+        <p>Light sensor reads a <strong>high value (above 150)</strong> → alarm! → show <strong>"WARNING"</strong> and play a <strong>beep</strong></p>
+      </div>
+      <div class="info-box" data-label="Always" style="--accent:var(--orange);">
+        <p>Checks <strong>every second</strong> and runs <strong>forever</strong></p>
+      </div>
+    </div>
+
+    <!-- 6 requirements checklist -->
+    <div class="card orange">
+      <div class="card-label">Q5 — Your Algorithm MUST Include These 6 Things</div>
+      <div class="card-title">Use this as a checklist ✓</div>
+      <ul class="checklist" style="--accent:var(--orange);">
+        <li><div class="num">1</div><div>Show that the program <strong>runs forever</strong> — use a forever loop</div></li>
+        <li><div class="num">2</div><div><strong>Read the light sensor</strong> value — use SENSE or READ</div></li>
+        <li><div class="num">3</div><div>Use a <strong>decision</strong> — an IF statement — to compare the value to 150</div></li>
+        <li><div class="num">4</div><div>What happens when the value is <strong>above 150</strong>? (WARNING + beep)</div></li>
+        <li><div class="num">5</div><div>What happens when the value is <strong>150 or below</strong>? (tick symbol)</div></li>
+        <li><div class="num">6</div><div>Add a <strong>1-second delay</strong> before checking again — use WAIT</div></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Pseudocode keywords -->
+  <div style="margin-top:20px;">
+    <div class="card" style="--accent:var(--orange);">
+      <div class="card-label">Q5 — Keywords from the exam word list — use these!</div>
+      <div class="card-title" style="margin-bottom:16px;">Pseudocode Vocabulary</div>
+      <div class="kw-grid">
+        <div class="kw-chip">START</div>
+        <div class="kw-chip">STOP</div>
+        <div class="kw-chip">FOREVER DO</div>
+        <div class="kw-chip">END FOREVER</div>
+        <div class="kw-chip pink">IF ... THEN</div>
+        <div class="kw-chip pink">ELSE</div>
+        <div class="kw-chip pink">END IF</div>
+        <div class="kw-chip yellow">SENSE</div>
+        <div class="kw-chip yellow">READ</div>
+        <div class="kw-chip yellow">SET</div>
+        <div class="kw-chip yellow">OUTPUT</div>
+        <div class="kw-chip">&gt; &lt; &gt;= &lt;=</div>
+        <div class="kw-chip">WAIT</div>
+      </div>
+      <div class="hint-box" data-label="Structure hint" style="--accent:var(--orange); margin-top:16px;">
+        <p><strong>START</strong> → <strong>FOREVER DO</strong> → read sensor → <strong>IF</strong> value &gt; 150 <strong>THEN</strong> … <strong>ELSE</strong> … <strong>END IF</strong> → WAIT 1 second → <strong>END FOREVER</strong> → <strong>STOP</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div style="margin-top:20px;">
+    <div class="card green" style="max-width:900px;">
+      <div class="card-label">Q6 — Describe the Notification (no code needed!)</div>
+      <div class="card-title">Think about: how do micro:bits communicate?</div>
+      <div class="think-q" style="--accent:var(--green);">
+        <div class="qmark" style="background:var(--green);">?</div>
+        <div class="qtext">The micro:bit has a built-in <strong>radio module</strong>. What can two micro:bits do wirelessly?</div>
+      </div>
+      <div class="think-q" style="--accent:var(--green);">
+        <div class="qmark" style="background:var(--green);">?</div>
+        <div class="qtext"><strong>Where in the algorithm</strong> would you add the notification? Only when the alarm is triggered, or all the time?</div>
+      </div>
+      <div class="think-q" style="--accent:var(--green);">
+        <div class="qmark" style="background:var(--green);">?</div>
+        <div class="qtext">What would the teacher's device need to be able to do to <strong>receive</strong> the message?</div>
+      </div>
+      <div class="hint-box" data-label="You do NOT need to write code" style="--accent:var(--green);">
+        <p>Describe the <strong>logic in plain English</strong>: <em>when</em> would the notification be sent, <em>how</em> (what technology), and <em>what</em> would it say. 2–4 sentences is enough.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  ST PETERS LUTHERAN COLLEGE SPRINGFIELD · YEAR 7 TECHNOLOGIES · 2026<br>
+  CLASSROOM HINTS DISPLAY — HINTS ONLY — WRITE YOUR OWN ANSWERS
+</footer>
+
+</body>
+</html>

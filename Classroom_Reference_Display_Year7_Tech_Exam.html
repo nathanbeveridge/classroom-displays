@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Year 7 Technologies — Exam Reference</title>
+<style>
+  :root {
+    --bg: #0d0d1a;
+    --panel: #12122a;
+    --panel2: #1a1a35;
+    --teal: #00e5cc;
+    --teal2: #00c4ae;
+    --pink: #ff4da6;
+    --yellow: #ffd700;
+    --orange: #ff8c42;
+    --blue: #4d9fff;
+    --green: #39e75f;
+    --red: #ff4d4d;
+    --white: #e8f0ff;
+    --dimwhite: #8899bb;
+    --glow-teal: 0 0 12px #00e5cc88, 0 0 30px #00e5cc33;
+    --glow-pink: 0 0 12px #ff4da688, 0 0 30px #ff4da633;
+    --glow-yellow: 0 0 12px #ffd70088, 0 0 30px #ffd70033;
+    --font: 'Courier New', Courier, monospace;
+    --sans: Arial, Helvetica, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::after {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.12) 2px,
+      rgba(0,0,0,0.12) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--panel);
+    border-bottom: 2px solid var(--teal);
+    padding: 10px 24px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px #00e5cc44;
+  }
+  nav .logo {
+    font-family: var(--font);
+    font-size: 1rem;
+    color: var(--teal);
+    text-shadow: var(--glow-teal);
+    letter-spacing: 2px;
+  }
+  nav .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+  nav a {
+    color: var(--dimwhite);
+    text-decoration: none;
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border: 1px solid #334;
+    border-radius: 4px;
+    transition: all 0.2s;
+    font-family: var(--font);
+  }
+  nav a:hover { color: var(--teal); border-color: var(--teal); box-shadow: var(--glow-teal); }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 48px 32px 56px;
+    border-bottom: 1px solid #1e2255;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ── SECTION HEADER ── */
+  .section-title {
+    font-family: var(--font);
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-title .badge {
+    background: var(--teal);
+    color: var(--bg);
+    font-size: 0.8rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    font-weight: bold;
+  }
+  .section-title .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, currentColor 0%, transparent 100%);
+    opacity: 0.4;
+  }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+  .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--panel);
+    border: 1px solid #2a2a55;
+    border-radius: 8px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent, var(--teal));
+  }
+  .card.teal { --accent: var(--teal); }
+  .card.pink { --accent: var(--pink); }
+  .card.yellow { --accent: var(--yellow); }
+  .card.orange { --accent: var(--orange); }
+  .card.blue { --accent: var(--blue); }
+  .card.green { --accent: var(--green)); }
+
+  .card-label {
+    font-family: var(--font);
+    font-size: 0.65rem;
+    color: var(--accent, var(--teal));
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    text-shadow: 0 0 8px currentColor;
+  }
+  .card-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+  .card-body { font-size: 0.9rem; color: var(--dimwhite); line-height: 1.6; }
+  .card-body strong { color: var(--white); }
+  .card-body .hi { color: var(--accent, var(--teal)); font-weight: bold; }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: #080812;
+    border: 1px solid #2a2a55;
+    border-left: 3px solid var(--teal);
+    border-radius: 6px;
+    padding: 16px 18px;
+    font-family: var(--font);
+    font-size: 0.9rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin: 12px 0;
+  }
+  .kw { color: var(--pink); font-weight: bold; }
+  .fn { color: var(--teal); }
+  .str { color: var(--yellow); }
+  .cmt { color: #5566aa; font-style: italic; }
+  .num { color: var(--orange); }
+  .indent-1 { padding-left: 2em; }
+  .indent-2 { padding-left: 4em; }
+
+  /* ── LED GRID ── */
+  .led-grid {
+    display: inline-grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    padding: 12px;
+    background: #05050f;
+    border: 2px solid #2a2a55;
+    border-radius: 8px;
+  }
+  .led {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    transition: all 0.3s;
+  }
+  .led.on {
+    background: radial-gradient(circle, #ff6a00 0%, #ee0979 60%, #880033 100%);
+    box-shadow: 0 0 8px #ff4da6, 0 0 20px #ff4da666;
+  }
+  .led.off {
+    background: #1a0a0a;
+    box-shadow: inset 0 0 4px #000;
+  }
+  .led-sm { width: 28px; height: 28px; }
+  .led-lg { width: 52px; height: 52px; }
+
+  /* ── KEYWORD TABLE ── */
+  .kw-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .kw-chip {
+    background: #080812;
+    border: 1px solid var(--teal);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: var(--font);
+    font-size: 1rem;
+    color: var(--teal);
+    text-align: center;
+    text-shadow: var(--glow-teal);
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+  .kw-chip:hover { background: #0d2222; box-shadow: var(--glow-teal); }
+  .kw-chip.pink { border-color: var(--pink); color: var(--pink); text-shadow: var(--glow-pink); }
+  .kw-chip.pink:hover { background: #1a0022; box-shadow: var(--glow-pink); }
+  .kw-chip.yellow { border-color: var(--yellow); color: var(--yellow); text-shadow: var(--glow-yellow); }
+
+  /* ── TABLE ── */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .ref-table th {
+    background: #1a1a3a;
+    color: var(--teal);
+    font-family: var(--font);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--teal);
+    text-transform: uppercase;
+  }
+  .ref-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #1e2255;
+    color: var(--dimwhite);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .ref-table td:first-child { font-family: var(--font); color: var(--teal); white-space: nowrap; }
+  .ref-table tr:hover td { background: #0d0d22; }
+  .ref-table td strong { color: var(--white); }
+
+  /* ── BINARY ROW DECODE ── */
+  .binary-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    font-family: var(--font);
+    font-size: 1.1rem;
+    margin: 6px 0;
+  }
+  .bit-0 { color: #334; background: #080812; border: 1px solid #2a2a55; padding: 4px 10px; border-radius: 4px; }
+  .bit-1 { color: var(--teal); background: #001a18; border: 1px solid var(--teal); padding: 4px 10px; border-radius: 4px; text-shadow: var(--glow-teal); }
+  .bit-arrow { color: var(--dimwhite); margin: 0 8px; }
+  .bit-result { font-size: 0.8rem; color: var(--dimwhite); margin-left: 8px; }
+
+  /* ── TRACE TABLE ── */
+  .trace-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  .trace-table th {
+    background: #12122a;
+    color: var(--pink);
+    font-family: var(--font);
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    padding: 8px 12px;
+    border: 1px solid #2a2a55;
+    text-transform: uppercase;
+  }
+  .trace-table td {
+    padding: 10px 12px;
+    border: 1px solid #2a2a55;
+    color: var(--dimwhite);
+    font-size: 0.88rem;
+  }
+  .trace-table td.yes { color: var(--green); font-weight: bold; font-family: var(--font); }
+  .trace-table td.out { color: var(--yellow); }
+  .trace-table tr:nth-child(even) td { background: #0d0d1e; }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 56px 32px 48px;
+    background: linear-gradient(180deg, #0d0d1a 0%, #12122a 100%);
+    border-bottom: 2px solid var(--teal);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, #00e5cc11 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 50%, #ff4da611 0%, transparent 60%);
+  }
+  .hero h1 {
+    font-family: var(--font);
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    letter-spacing: 4px;
+    color: var(--teal);
+    text-shadow: var(--glow-teal);
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .hero .sub {
+    font-size: 1rem;
+    color: var(--dimwhite);
+    letter-spacing: 2px;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .hero .date {
+    font-family: var(--font);
+    font-size: 0.8rem;
+    color: var(--pink);
+    letter-spacing: 3px;
+    text-shadow: var(--glow-pink);
+    position: relative;
+  }
+
+  /* ── ALGO STEPS ── */
+  .algo-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #1e2255;
+  }
+  .algo-step:last-child { border-bottom: none; }
+  .step-num {
+    background: var(--teal);
+    color: var(--bg);
+    font-family: var(--font);
+    font-size: 0.8rem;
+    font-weight: bold;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-text { font-size: 0.9rem; color: var(--dimwhite); line-height: 1.5; }
+  .step-text strong { color: var(--white); }
+
+  /* ── GLOWING INFO BOX ── */
+  .info-box {
+    border: 1px solid var(--accent, var(--teal));
+    border-radius: 8px;
+    padding: 14px 18px;
+    background: #05050f;
+    margin: 12px 0;
+    position: relative;
+  }
+  .info-box::before {
+    content: attr(data-label);
+    position: absolute; top: -10px; left: 14px;
+    background: var(--bg);
+    padding: 0 8px;
+    font-family: var(--font);
+    font-size: 0.65rem;
+    color: var(--accent, var(--teal));
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px currentColor;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-family: var(--font);
+    font-size: 0.7rem;
+    color: #334;
+    letter-spacing: 2px;
+    border-top: 1px solid #1e2255;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .card-grid-3 { grid-template-columns: 1fr 1fr; }
+    .led { width: 36px; height: 36px; }
+  }
+  @media (max-width: 600px) {
+    .card-grid-3, .card-grid-2 { grid-template-columns: 1fr; }
+    section { padding: 32px 16px 40px; }
+  }
+  @media print {
+    body::after { display: none; }
+    nav { position: static; }
+    .card:hover { transform: none; }
+    section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">[ TECH7 // EXAM REF ]</div>
+  <div class="nav-links">
+    <a href="#python">Python</a>
+    <a href="#pseudocode">Pseudocode</a>
+    <a href="#binary">Binary</a>
+    <a href="#trace">Algorithm Trace</a>
+    <a href="#locker">Locker Alarm</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>YEAR 7 TECHNOLOGIES // EXAM REFERENCE</h1>
+  <p class="sub">St Peters Lutheran College Springfield &nbsp;·&nbsp; Classes 7S · 7T · 7U</p>
+  <p class="date">[ 06 · 03 · 2026 ]</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 1: PYTHON MICRO:BIT REFERENCE -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="python">
+  <div class="section-title" style="color: var(--teal);">
+    <span class="badge">Q2</span>
+    Python on the micro:bit
+    <span class="line"></span>
+  </div>
+
+  <div class="card-grid card-grid-2">
+
+    <!-- Core structure -->
+    <div class="card teal">
+      <div class="card-label">Core Program Structure</div>
+      <div class="card-title">The Paw Print Button Program</div>
+      <div class="code-block">
+<span class="cmt"># Always start with this</span><br>
+<span class="kw">from</span> microbit <span class="kw">import</span> *<br>
+<br>
+<span class="cmt"># Run forever</span><br>
+<span class="kw">while</span> <span class="num">True</span>:<br>
+<span class="indent-1"><span class="kw">if</span> <span class="fn">button_a</span>.is_pressed():</span><br>
+<span class="indent-2"><span class="fn">display</span>.show(<span class="fn">Image</span>.<span class="str">HEART</span>)</span><br>
+<span class="indent-1"><span class="kw">else</span>:</span><br>
+<span class="indent-2"><span class="fn">display</span>.clear()</span>
+      </div>
+      <div class="card-body" style="font-size:0.78rem; margin-top:8px;">
+        ✅ Any image name is fine (e.g. <span style="font-family:monospace; color:var(--teal)">Image.HEART</span>, <span style="font-family:monospace; color:var(--teal)">Image.DUCK</span>)<br>
+        ✅ Indentation matters — use 4 spaces inside the <span style="color:var(--pink); font-family:monospace">while</span> and <span style="color:var(--pink); font-family:monospace">if</span>
+      </div>
+    </div>
+
+    <!-- Command reference -->
+    <div class="card blue">
+      <div class="card-label">Key Commands</div>
+      <div class="card-title">micro:bit Python Quick Reference</div>
+      <table class="ref-table">
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr>
+          <td>from microbit import *</td>
+          <td><strong>Always the first line.</strong> Loads all micro:bit features.</td>
+        </tr>
+        <tr>
+          <td>while True:</td>
+          <td><strong>Runs forever.</strong> The code inside keeps looping until the device is switched off.</td>
+        </tr>
+        <tr>
+          <td>button_a.is_pressed()</td>
+          <td>Returns <strong>True</strong> if Button A is held down right now, <strong>False</strong> if not.</td>
+        </tr>
+        <tr>
+          <td>display.show(Image.X)</td>
+          <td><strong>Lights up</strong> a built-in image on the LED grid. Replace X with the image name.</td>
+        </tr>
+        <tr>
+          <td>display.clear()</td>
+          <td><strong>Turns off</strong> all LEDs — blank screen.</td>
+        </tr>
+        <tr>
+          <td>sleep(1000)</td>
+          <td>Waits <strong>1 second</strong> (1000 milliseconds) before the next step.</td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 20px;">
+    <div class="card teal" style="max-width:900px;">
+      <div class="card-label">If / Else Reminder</div>
+      <div class="card-title">Making decisions in Python</div>
+      <div class="card-grid card-grid-2" style="gap:16px;">
+        <div>
+          <div class="code-block">
+<span class="kw">if</span> condition:<br>
+<span class="indent-1"><span class="cmt"># do this if TRUE</span></span><br>
+<span class="kw">else</span>:<br>
+<span class="indent-1"><span class="cmt"># do this if FALSE</span></span>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px; justify-content:center;">
+          <div class="info-box" data-label="BUTTON PRESSED" style="--accent: var(--green);">
+            <div style="color:var(--green); font-size:0.85rem;"><strong>if</strong> button_a.is_pressed() → <strong>Show image</strong></div>
+          </div>
+          <div class="info-box" data-label="BUTTON NOT PRESSED" style="--accent: var(--red);">
+            <div style="color:var(--red); font-size:0.85rem;"><strong>else</strong> (button released) → <strong>Clear screen</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 2: PSEUDOCODE -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="pseudocode">
+  <div class="section-title" style="color: var(--pink);">
+    <span class="badge" style="background:var(--pink);">Q1 Q5</span>
+    Pseudocode Keywords
+    <span class="line" style="color:var(--pink);"></span>
+  </div>
+
+  <p style="color:var(--dimwhite); margin-bottom:24px; font-size:0.9rem;">Pseudocode is plain-English instructions that describe a program's logic. Use these keywords from the exam word list:</p>
+
+  <div class="kw-grid" style="margin-bottom:28px;">
+    <div class="kw-chip">START</div>
+    <div class="kw-chip">STOP</div>
+    <div class="kw-chip">FOREVER DO</div>
+    <div class="kw-chip">END FOREVER</div>
+    <div class="kw-chip pink">IF ... THEN</div>
+    <div class="kw-chip pink">ELSE</div>
+    <div class="kw-chip pink">END IF</div>
+    <div class="kw-chip">WHILE ... DO</div>
+    <div class="kw-chip">END WHILE</div>
+    <div class="kw-chip yellow">INPUT</div>
+    <div class="kw-chip yellow">SENSE</div>
+    <div class="kw-chip yellow">READ</div>
+    <div class="kw-chip yellow">SET</div>
+    <div class="kw-chip yellow">OUTPUT</div>
+    <div class="kw-chip">&gt;  &lt;  &gt;=  &lt;=</div>
+    <div class="kw-chip">==  !=</div>
+    <div class="kw-chip">WAIT</div>
+    <div class="kw-chip">REPEAT</div>
+  </div>
+
+  <div class="card-grid card-grid-2">
+    <div class="card pink">
+      <div class="card-label">Q1 Algorithm — Reading Pseudocode</div>
+      <div class="card-title">Paw Print Button — Step by Step</div>
+      <div class="code-block" style="border-left-color: var(--pink);">
+<span style="color:var(--pink)">WHILE</span> button A is pressed <span style="color:var(--pink)">DO</span><br>
+<span class="indent-1">show image PAWPRINT</span><br>
+<span style="color:var(--pink)">END WHILE</span><br>
+clear screen
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--pink);">1</div>
+        <div class="step-text"><strong>WHILE button A is pressed</strong> — keeps checking if the button is held</div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--pink);">2</div>
+        <div class="step-text"><strong>show image PAWPRINT</strong> — lights up the paw print on the LED grid</div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--pink);">3</div>
+        <div class="step-text"><strong>END WHILE</strong> — loop exits when button is released</div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--pink);">4</div>
+        <div class="step-text"><strong>clear screen</strong> — LEDs turn off after releasing</div>
+      </div>
+    </div>
+
+    <div class="card yellow">
+      <div class="card-label">Pseudocode Concepts</div>
+      <div class="card-title">Three Building Blocks</div>
+      <div class="info-box" data-label="SEQUENCE" style="--accent:var(--teal);">
+        <div style="color:var(--dimwhite); font-size:0.85rem;">Steps happen <strong style="color:var(--white)">one after another</strong>, in order. Like a recipe.</div>
+      </div>
+      <div class="info-box" data-label="SELECTION (IF/ELSE)" style="--accent:var(--pink);">
+        <div style="color:var(--dimwhite); font-size:0.85rem;">The program <strong style="color:var(--white)">makes a decision</strong>. IF something is true → do one thing. ELSE → do something different.</div>
+      </div>
+      <div class="info-box" data-label="REPETITION (WHILE / FOREVER)" style="--accent:var(--yellow);">
+        <div style="color:var(--dimwhite); font-size:0.85rem;">A block of code <strong style="color:var(--white)">repeats</strong>. WHILE a condition is true, OR forever (while True).</div>
+      </div>
+      <div style="margin-top:12px; font-size:0.8rem; color:var(--dimwhite);">
+        🔑 &nbsp;The paw print program uses <span style="color:var(--yellow)">repetition</span> (WHILE) + <span style="color:var(--teal)">sequence</span> (steps in order).<br>
+        🔑 &nbsp;The locker alarm uses <span style="color:var(--yellow)">repetition</span> (FOREVER) + <span style="color:var(--pink)">selection</span> (IF/ELSE).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 3: BINARY & LED GRID -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="binary">
+  <div class="section-title" style="color: var(--yellow);">
+    <span class="badge" style="background:var(--yellow); color:#000;">Q4</span>
+    Binary &amp; the LED Grid
+    <span class="line" style="color:var(--yellow);"></span>
+  </div>
+
+  <div class="card-grid card-grid-2">
+
+    <!-- Rules -->
+    <div class="card yellow">
+      <div class="card-label">The Rule</div>
+      <div class="card-title">How to read binary for the grid</div>
+      <div style="display:flex; gap:24px; margin:16px 0; flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div class="led on led-lg" style="margin:0 auto 8px;"></div>
+          <div style="font-family:var(--font); font-size:1.4rem; color:var(--teal); text-shadow:var(--glow-teal);">1</div>
+          <div style="font-size:0.8rem; color:var(--dimwhite);">LED <strong style="color:var(--white)">ON</strong><br>Shade the cell</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="led off led-lg" style="margin:0 auto 8px;"></div>
+          <div style="font-family:var(--font); font-size:1.4rem; color:#334;">0</div>
+          <div style="font-size:0.8rem; color:var(--dimwhite);">LED <strong style="color:var(--white)">OFF</strong><br>Leave blank</div>
+        </div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--yellow); color:#000;">1</div>
+        <div class="step-text">Split the binary string into <strong>groups of 5</strong> (one row each)</div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--yellow); color:#000;">2</div>
+        <div class="step-text">Work left to right, top to bottom across the grid</div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--yellow); color:#000;">3</div>
+        <div class="step-text"><span style="color:var(--teal)">1 = shade / fill</span>&nbsp;&nbsp;&nbsp;<span style="color:#334;">0 = leave white / empty</span></div>
+      </div>
+    </div>
+
+    <!-- Decode walkthrough -->
+    <div class="card yellow">
+      <div class="card-label">Q4 — Decode the Binary String</div>
+      <div class="card-title">1010111111011101111110101</div>
+      <div style="margin: 12px 0;">
+        <div style="font-family:var(--font); font-size:0.75rem; color:var(--dimwhite); margin-bottom:10px; letter-spacing:1px;">SPLIT INTO ROWS OF 5:</div>
+        <div class="binary-row">
+          <div class="bit-1">1</div><div class="bit-0">0</div><div class="bit-1">1</div><div class="bit-0">0</div><div class="bit-1">1</div>
+          <div class="bit-arrow">→</div><div class="bit-result">Row 1: shade 1, 3, 5</div>
+        </div>
+        <div class="binary-row">
+          <div class="bit-1">1</div><div class="bit-1">1</div><div class="bit-1">1</div><div class="bit-1">1</div><div class="bit-1">1</div>
+          <div class="bit-arrow">→</div><div class="bit-result">Row 2: shade ALL</div>
+        </div>
+        <div class="binary-row">
+          <div class="bit-0">0</div><div class="bit-1">1</div><div class="bit-1">1</div><div class="bit-1">1</div><div class="bit-0">0</div>
+          <div class="bit-arrow">→</div><div class="bit-result">Row 3: shade 2, 3, 4</div>
+        </div>
+        <div class="binary-row">
+          <div class="bit-1">1</div><div class="bit-1">1</div><div class="bit-1">1</div><div class="bit-1">1</div><div class="bit-1">1</div>
+          <div class="bit-arrow">→</div><div class="bit-result">Row 4: shade ALL</div>
+        </div>
+        <div class="binary-row">
+          <div class="bit-1">1</div><div class="bit-0">0</div><div class="bit-1">1</div><div class="bit-0">0</div><div class="bit-1">1</div>
+          <div class="bit-arrow">→</div><div class="bit-result">Row 5: shade 1, 3, 5</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Answer grid -->
+  <div style="margin-top:24px; display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap;">
+    <div>
+      <div style="font-family:var(--font); font-size:0.7rem; color:var(--yellow); letter-spacing:3px; margin-bottom:12px; text-shadow:var(--glow-yellow);">CORRECT ANSWER — PAW PRINT</div>
+      <div class="led-grid">
+        <!-- Row 1: 10101 -->
+        <div class="led on"></div><div class="led off"></div><div class="led on"></div><div class="led off"></div><div class="led on"></div>
+        <!-- Row 2: 11111 -->
+        <div class="led on"></div><div class="led on"></div><div class="led on"></div><div class="led on"></div><div class="led on"></div>
+        <!-- Row 3: 01110 -->
+        <div class="led off"></div><div class="led on"></div><div class="led on"></div><div class="led on"></div><div class="led off"></div>
+        <!-- Row 4: 11111 -->
+        <div class="led on"></div><div class="led on"></div><div class="led on"></div><div class="led on"></div><div class="led on"></div>
+        <!-- Row 5: 10101 -->
+        <div class="led on"></div><div class="led off"></div><div class="led on"></div><div class="led off"></div><div class="led on"></div>
+      </div>
+    </div>
+    <div style="flex:1; min-width:260px;">
+      <div class="card yellow" style="max-width:480px;">
+        <div class="card-label">What shape is this?</div>
+        <div class="card-title">It's a paw print! 🐾</div>
+        <div class="card-body">
+          The top row has 3 dots — like <strong>toe beans</strong>.<br>
+          Row 2 makes a wide bar.<br>
+          Row 3 has a notch — the <strong>main pad</strong> shape.<br>
+          Row 4 fills the bottom.<br>
+          Row 5 mirrors the top.<br>
+          <br>
+          This is the same image the program shows when Button A is pressed — the binary encodes exactly what lights up on the micro:bit's 5×5 LED grid.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 4: ALGORITHM TRACE (Q3) -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="trace">
+  <div class="section-title" style="color: var(--blue);">
+    <span class="badge" style="background:var(--blue);">Q3</span>
+    Algorithm Tracing
+    <span class="line" style="color:var(--blue);"></span>
+  </div>
+
+  <p style="color:var(--dimwhite); margin-bottom:24px; font-size:0.9rem;">Tracing means stepping through an algorithm and recording what happens at each step. For Q3, fill in the Loop Running? and Output columns:</p>
+
+  <div class="card-grid card-grid-2">
+    <div class="card blue">
+      <div class="card-label">Q3 — Completed Trace Table</div>
+      <div class="card-title">Paw Print Button Algorithm</div>
+      <table class="trace-table" style="margin-top:12px;">
+        <tr>
+          <th>Step</th><th>Button A State</th><th>Loop Running?</th><th>Output on micro:bit</th>
+        </tr>
+        <tr>
+          <td>1</td><td>Not pressed</td><td class="yes">Y</td><td class="out">Nothing (blank)</td>
+        </tr>
+        <tr>
+          <td>2</td><td>Pressed</td><td class="yes">Y</td><td class="out">PAWPRINT image</td>
+        </tr>
+        <tr>
+          <td>3</td><td>Held</td><td class="yes">Y</td><td class="out">PAWPRINT (still showing)</td>
+        </tr>
+        <tr>
+          <td>4</td><td>Released</td><td class="yes">Y</td><td class="out">Nothing (screen clears)</td>
+        </tr>
+      </table>
+      <div style="margin-top:14px; padding:10px 12px; background:#080812; border-radius:6px; border:1px solid var(--blue);">
+        <span style="color:var(--blue); font-family:var(--font); font-size:0.75rem;">⚠ KEY POINT:</span>
+        <span style="color:var(--dimwhite); font-size:0.82rem;"> The loop is <strong style="color:var(--green)">ALWAYS running (Y)</strong> for all 4 steps — a <span style="color:var(--teal); font-family:monospace">while True</span> loop never stops while the device is on.</span>
+      </div>
+    </div>
+
+    <div class="card blue">
+      <div class="card-label">How to Trace</div>
+      <div class="card-title">Step-by-step tracing method</div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--blue);">1</div>
+        <div class="step-text">Read the algorithm from <strong>top to bottom</strong></div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--blue);">2</div>
+        <div class="step-text">For each step: check the condition — is the button pressed or not?</div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--blue);">3</div>
+        <div class="step-text">Write what the <strong>output would be</strong> at that exact moment</div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--blue);">4</div>
+        <div class="step-text">Ask: "Does the loop stop?" → If it's <code style="color:var(--teal)">while True</code> — <strong>never!</strong></div>
+      </div>
+      <div class="algo-step">
+        <div class="step-num" style="background:var(--blue);">5</div>
+        <div class="step-text">Repeat for each row of the table</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 5: LOCKER ALARM (Q5 & Q6) -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="locker">
+  <div class="section-title" style="color: var(--orange);">
+    <span class="badge" style="background:var(--orange);">Q5 Q6</span>
+    Locker Alarm Algorithm
+    <span class="line" style="color:var(--orange);"></span>
+  </div>
+
+  <div class="card-grid card-grid-2">
+
+    <!-- Scenario card -->
+    <div class="card orange">
+      <div class="card-label">The Scenario</div>
+      <div class="card-title">Locker Door Detector</div>
+      <div class="card-body">
+        A micro:bit is placed <strong>inside a locker</strong>. It uses its <strong>light sensor</strong> to detect if the door is open.
+      </div>
+      <div style="margin:14px 0; display:flex; gap:12px; flex-wrap:wrap;">
+        <div class="info-box" data-label="DOOR CLOSED" style="--accent:var(--green); flex:1; min-width:180px;">
+          <div style="color:var(--dimwhite); font-size:0.82rem;">Dark inside → <strong style="color:var(--green)">light level ≤ 150</strong> → show ✔ (tick / safe)</div>
+        </div>
+        <div class="info-box" data-label="DOOR OPEN" style="--accent:var(--red); flex:1; min-width:180px;">
+          <div style="color:var(--dimwhite); font-size:0.82rem;">Light enters → <strong style="color:var(--red)">light level &gt; 150</strong> → show "WARNING" + beep</div>
+        </div>
+      </div>
+      <div class="card-body" style="font-size:0.8rem;">
+        It checks the light level <strong>every second</strong> and runs <strong>forever</strong>.
+      </div>
+    </div>
+
+    <!-- Pseudocode answer -->
+    <div class="card orange">
+      <div class="card-label">Q5 Part A — Model Pseudocode</div>
+      <div class="card-title">Your Algorithm Should Look Like This</div>
+      <div class="code-block" style="border-left-color:var(--orange);">
+<span style="color:var(--teal)">START</span><br>
+<span style="color:var(--orange)">FOREVER DO</span><br>
+<span class="indent-1"><span style="color:var(--yellow)">SENSE</span> light level</span><br>
+<span class="indent-1"><span style="color:var(--yellow)">SET</span> light = <span style="color:var(--yellow)">READ</span> light sensor</span><br>
+<span class="indent-1"><span style="color:var(--pink)">IF</span> light <span style="color:var(--white)">&gt;</span> <span class="num">150</span> <span style="color:var(--pink)">THEN</span></span><br>
+<span class="indent-2"><span style="color:var(--yellow)">OUTPUT</span> <span class="str">"WARNING"</span></span><br>
+<span class="indent-2"><span style="color:var(--yellow)">OUTPUT</span> beep</span><br>
+<span class="indent-1"><span style="color:var(--pink)">ELSE</span></span><br>
+<span class="indent-2"><span style="color:var(--yellow)">OUTPUT</span> tick symbol</span><br>
+<span class="indent-1"><span style="color:var(--pink)">END IF</span></span><br>
+<span class="indent-1"><span style="color:var(--blue)">WAIT</span> 1 second</span><br>
+<span style="color:var(--orange)">END FOREVER</span><br>
+<span style="color:var(--teal)">STOP</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Checklist -->
+  <div style="margin-top:20px;">
+    <div class="card" style="--accent:var(--orange); max-width:900px;">
+      <div class="card-label">Q5 Checklist — Your Algorithm Must Include All 6:</div>
+      <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:10px; margin-top:12px;">
+        <div class="info-box" data-label="1 · FOREVER LOOP" style="--accent:var(--orange);">
+          <div style="font-size:0.82rem; color:var(--dimwhite);">FOREVER DO ... END FOREVER (shows it runs forever)</div>
+        </div>
+        <div class="info-box" data-label="2 · READ SENSOR" style="--accent:var(--orange);">
+          <div style="font-size:0.82rem; color:var(--dimwhite);">SENSE / READ the light sensor value</div>
+        </div>
+        <div class="info-box" data-label="3 · IF STATEMENT" style="--accent:var(--orange);">
+          <div style="font-size:0.82rem; color:var(--dimwhite);">IF ... THEN ... ELSE ... END IF (decision)</div>
+        </div>
+        <div class="info-box" data-label="4 · ABOVE 150 → WARNING" style="--accent:var(--red);">
+          <div style="font-size:0.82rem; color:var(--dimwhite);">IF light &gt; 150 → OUTPUT "WARNING" + beep</div>
+        </div>
+        <div class="info-box" data-label="5 · 150 OR BELOW → TICK" style="--accent:var(--green);">
+          <div style="font-size:0.82rem; color:var(--dimwhite);">ELSE → OUTPUT tick symbol</div>
+        </div>
+        <div class="info-box" data-label="6 · WAIT 1 SECOND" style="--accent:var(--blue);">
+          <div style="font-size:0.82rem; color:var(--dimwhite);">WAIT 1 second before next check</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 notification -->
+  <div style="margin-top:20px;">
+    <div class="card green" style="max-width:900px;">
+      <div class="card-label">Q6 Part B — Sending a Notification</div>
+      <div class="card-title">How to describe the modification (no code needed!)</div>
+      <div class="card-body" style="margin-bottom:14px;">
+        Inside the <span style="color:var(--red); font-family:monospace">IF light &gt; 150</span> block — the alarm section — add a step to <strong>send a message wirelessly</strong>.
+      </div>
+      <div class="code-block" style="border-left-color:var(--green);">
+<span style="color:var(--pink)">IF</span> light <span style="color:var(--white)">&gt;</span> <span class="num">150</span> <span style="color:var(--pink)">THEN</span><br>
+<span class="indent-1"><span style="color:var(--yellow)">OUTPUT</span> <span class="str">"WARNING"</span></span><br>
+<span class="indent-1"><span style="color:var(--yellow)">OUTPUT</span> beep</span><br>
+<span class="indent-1" style="color:var(--green)">SEND radio message "LOCKER OPENED" to teacher device  <span class="cmt">← add this!</span></span>
+      </div>
+      <div class="card-body" style="font-size:0.82rem; margin-top:10px;">
+        Key idea: The micro:bit has a built-in <strong>radio module</strong>. It can send short messages wirelessly to another micro:bit or device. The teacher's device receives and displays the alert. <br><br>
+        A simple answer is fine: <em>"When the alarm triggers, add a SEND step to transmit a radio message to the teacher's micro:bit."</em>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  ST PETERS LUTHERAN COLLEGE SPRINGFIELD (SPRINGFIELD CENTRAL) &nbsp;·&nbsp; YEAR 7 TECHNOLOGIES &nbsp;·&nbsp; 2026<br>
+  CLASSROOM REFERENCE — FOR DISPLAY ON TV SCREENS AND WALLS
+</footer>
+
+</body>
+</html>
