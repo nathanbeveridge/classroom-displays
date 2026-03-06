@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Year 7 Technologies — Exam Prep Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:     #0D1B2A;
+    --card:   #1B2838;
+    --card2:  #0F2236;
+    --teal:   #00C9A7;
+    --coral:  #FF6B6B;
+    --gold:   #FFD166;
+    --sky:    #4ECDC4;
+    --purple: #845EC2;
+    --green:  #06D6A0;
+    --white:  #F0F4F8;
+    --muted:  #7BAAB8;
+    --border: rgba(0,201,167,0.15);
+    --mono:   'JetBrains Mono', monospace;
+    --sans:   'Inter', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,201,167,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,201,167,0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── SITE HEADER ── */
+  .site-header {
+    position: relative; z-index: 10;
+    background: linear-gradient(135deg, #0A1628 0%, var(--card2) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 0;
+  }
+  .site-logo { display: flex; flex-direction: column; }
+  .logo-school { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--teal); text-transform: uppercase; font-weight: 700; }
+  .logo-title  { font-size: 1.1rem; font-weight: 800; color: var(--white); line-height: 1.2; }
+  .logo-sub    { font-size: 0.72rem; color: var(--muted); }
+
+  .timer-pills { display: flex; gap: 0.5rem; }
+  .pill-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.35rem 0.75rem;
+    text-align: center;
+    font-size: 0.65rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pill-item .mins { display: block; font-size: 1rem; font-weight: 800; color: var(--white); line-height: 1; }
+  .pill-item:hover, .pill-item.active { border-color: var(--teal); background: rgba(0,201,167,0.1); color: var(--teal); }
+  .pill-item.active .mins { color: var(--teal); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 4rem 2rem 2.5rem;
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 3rem;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,201,167,0.1); border: 1px solid rgba(0,201,167,0.3);
+    border-radius: 20px; padding: 0.3rem 1rem;
+    font-size: 0.7rem; color: var(--teal); letter-spacing: 0.08em; font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 800; line-height: 1.1;
+    background: linear-gradient(135deg, var(--white) 0%, var(--teal) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.8rem;
+  }
+  .hero p { font-size: 1rem; color: var(--muted); line-height: 1.6; max-width: 540px; }
+  .topic-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1.2rem; }
+  .chip {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 0.25rem 0.9rem;
+    font-size: 0.72rem; font-weight: 600; color: var(--muted);
+  }
+
+  /* micro:bit illustration */
+  .microbit-display {
+    background: #1a1a2e;
+    border: 3px solid #2a3a5a;
+    border-radius: 14px;
+    padding: 1.2rem;
+    box-shadow: 0 0 40px rgba(0,201,167,0.15);
+    flex-shrink: 0;
+  }
+  .mb-label { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); text-align: center; margin-bottom: 0.7rem; }
+  .led-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .led { width: 26px; height: 26px; border-radius: 5px; background: #111; border: 1px solid #2a3a4a; transition: all 0.4s; }
+  .led.on { background: #FF4444; box-shadow: 0 0 10px rgba(255,68,68,0.7); border-color: #FF6666; }
+  .mb-buttons { display: flex; justify-content: space-between; margin-top: 0.8rem; }
+  .mb-btn {
+    background: #2a3a5a; border: 1px solid #3a4a6a;
+    border-radius: 6px; padding: 0.3rem 0.7rem;
+    font-size: 0.65rem; color: var(--muted); cursor: pointer;
+    transition: all 0.2s; font-family: var(--mono);
+  }
+  .mb-btn:hover, .mb-btn.pressed { background: rgba(0,201,167,0.2); border-color: var(--teal); color: var(--teal); }
+
+  /* ── MAIN LAYOUT ── */
+  main { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 2rem 5rem; }
+
+  /* ── LESSON SECTIONS ── */
+  .lesson-section { display: none; animation: fadeUp 0.35s ease; }
+  .lesson-section.active { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .section-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 2rem; padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; font-weight: 800; flex-shrink: 0;
+    color: var(--bg);
+  }
+  .section-title { font-size: 1.6rem; font-weight: 800; }
+  .section-time { margin-left: auto; font-size: 0.72rem; font-weight: 700; padding: 0.3rem 1rem; border-radius: 20px; border: 1px solid; white-space: nowrap; }
+
+  /* ── CARDS ── */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .card-label { font-size: 0.65rem; letter-spacing: 0.15em; font-weight: 700; margin-bottom: 0.6rem; text-transform: uppercase; }
+  .card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; }
+  .card p, .card li { font-size: 0.92rem; color: #a8c0ce; line-height: 1.7; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+
+  /* ── CODE BLOCKS ── */
+  .code-box {
+    background: #070F1C;
+    border: 1px solid rgba(0,201,167,0.2);
+    border-left: 4px solid var(--teal);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin: 0.8rem 0;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: #a8ff78;
+    line-height: 1.9;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .code-comment { color: var(--muted); }
+  .code-keyword { color: var(--sky); }
+
+  /* ── INFO BOXES ── */
+  .info { border-left: 4px solid; padding: 0.9rem 1.2rem; border-radius: 0 8px 8px 0; margin: 0.8rem 0; font-size: 0.88rem; line-height: 1.6; }
+  .info.teal   { border-color: var(--teal);   background: rgba(0,201,167,0.07);   color: #b0e8e0; }
+  .info.coral  { border-color: var(--coral);  background: rgba(255,107,107,0.07); color: #ffc5c5; }
+  .info.gold   { border-color: var(--gold);   background: rgba(255,209,102,0.07); color: #fff0c0; }
+  .info.purple { border-color: var(--purple); background: rgba(132,94,194,0.07);  color: #d4c0ee; }
+  .info strong { color: var(--white); font-weight: 700; display: block; margin-bottom: 0.3rem; }
+
+  /* ── TABLES ── */
+  .styled-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 0.8rem 0; }
+  .styled-table th { background: rgba(0,201,167,0.12); color: var(--teal); padding: 0.7rem 1rem; text-align: left; font-size: 0.75rem; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
+  .styled-table td { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: #a8c0ce; }
+  .styled-table td:first-child { font-family: var(--mono); font-size: 0.8rem; color: var(--teal); }
+  .styled-table tr:hover td { background: rgba(0,201,167,0.04); }
+
+  /* ── SCENARIO CARD ── */
+  .scenario-card {
+    background: var(--card2);
+    border: 1px solid var(--teal);
+    border-radius: 14px;
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .scenario-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.5rem; }
+  .scenario-step { background: var(--card); border-radius: 10px; padding: 1rem; text-align: center; }
+  .scenario-step .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .scenario-step p { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+
+  /* ── TRACE TABLE ── */
+  .trace-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 0.8rem 0; }
+  .trace-table th { background: var(--coral); color: white; padding: 0.7rem 1rem; text-align: left; font-size: 0.78rem; }
+  .trace-table td { padding: 0.7rem 1rem; border: 1px solid rgba(255,255,255,0.06); color: #a8c0ce; }
+  .trace-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .yes { color: var(--green); font-weight: 700; }
+  .no  { color: var(--coral); font-weight: 700; }
+
+  /* ── LED BINARY GRID ── */
+  .binary-demo { display: flex; gap: 3rem; align-items: flex-start; flex-wrap: wrap; margin: 1rem 0; }
+  .binary-rows { font-family: var(--mono); font-size: 0.82rem; line-height: 2.5; }
+  .binary-rows span { display: inline-block; margin: 0 2px; width: 18px; text-align: center; }
+  .bit-1 { color: var(--coral); font-weight: 700; }
+  .bit-0 { color: var(--muted); }
+  .led-demo-grid { display: grid; grid-template-columns: repeat(5, 36px); gap: 5px; }
+  .led-demo { width: 36px; height: 36px; border-radius: 7px; border: 1px solid #2a3a4a; background: #111; transition: all 0.3s; }
+  .led-demo.on { background: #FF4444; box-shadow: 0 0 12px rgba(255,68,68,0.6); border-color: #FF6666; }
+
+  /* ── PRACTICE Q's ── */
+  .practice-q { background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 1.5rem; overflow: hidden; }
+  .practice-q-header { padding: 1rem 1.5rem; font-weight: 700; font-size: 0.92rem; display: flex; align-items: center; gap: 0.8rem; }
+  .practice-q-body { padding: 1.5rem; border-top: 1px solid var(--border); }
+  .answer-lines { margin: 1rem 0; }
+  .answer-line { border-bottom: 1px dashed rgba(255,255,255,0.1); height: 36px; margin-bottom: 4px; }
+  .reveal-btn {
+    background: rgba(0,201,167,0.08); border: 1px solid var(--teal);
+    color: var(--teal); border-radius: 8px; padding: 0.5rem 1.2rem;
+    cursor: pointer; font-size: 0.78rem; font-weight: 700;
+    font-family: var(--mono); transition: all 0.2s; margin-top: 0.8rem;
+    letter-spacing: 0.04em;
+  }
+  .reveal-btn:hover { background: rgba(0,201,167,0.18); }
+  .model-answer { display: none; margin-top: 1rem; }
+  .model-answer.show { display: block; animation: fadeUp 0.25s ease; }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; margin: 0.8rem 0; }
+  .checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; font-size: 0.88rem; color: #a8c0ce; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .checklist li::before { content: '☐'; position: absolute; left: 0; color: var(--teal); font-size: 1.1rem; }
+
+  /* ── QUIZ ── */
+  .quiz-q { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 1rem; }
+  .quiz-q p { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.8rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .quiz-opt {
+    background: var(--card); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px; padding: 0.7rem 1rem;
+    cursor: pointer; font-size: 0.88rem; color: var(--muted);
+    text-align: left; transition: all 0.2s; font-family: var(--sans);
+  }
+  .quiz-opt:hover { border-color: var(--teal); color: var(--white); }
+  .quiz-opt.correct { background: rgba(6,214,160,0.1); border-color: var(--green); color: var(--green); }
+  .quiz-opt.wrong   { background: rgba(255,107,107,0.1); border-color: var(--coral); color: var(--coral); }
+  .quiz-feedback { font-size: 0.82rem; padding: 0.5rem 0.8rem; border-radius: 6px; margin-top: 0.5rem; display: none; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: rgba(6,214,160,0.1); color: var(--green); }
+  .quiz-feedback.wrong   { background: rgba(255,107,107,0.1); color: var(--coral); }
+  .score-box { text-align: center; padding: 2rem; background: var(--card); border-radius: 14px; margin-top: 1.5rem; border: 1px solid var(--border); }
+  .score-num { font-size: 3rem; font-weight: 800; color: var(--teal); font-family: var(--mono); }
+
+  /* ── CHEAT SHEET ── */
+  .cheat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .cheat-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+  .cheat-card-hdr { padding: 0.7rem 1rem; font-weight: 700; font-size: 0.82rem; color: var(--bg); }
+  .cheat-card-body { padding: 1rem; font-family: var(--mono); font-size: 0.78rem; color: #a8c0ce; line-height: 1.9; }
+
+  /* ── TEACHER NOTES ── */
+  .teacher-note {
+    background: rgba(255,209,102,0.06); border: 1px solid rgba(255,209,102,0.25);
+    border-radius: 8px; padding: 0.8rem 1rem; margin-bottom: 1.2rem;
+    font-size: 0.82rem; color: #ffe8a0;
+  }
+  .teacher-note::before { content: '📌 Teacher: '; font-weight: 700; }
+
+  /* ── NAV PROGRESS BAR ── */
+  .progress-bar { height: 3px; background: rgba(255,255,255,0.05); position: relative; z-index: 10; }
+  .progress-fill { height: 100%; background: var(--teal); transition: width 0.4s ease; }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,27,42,0.95); border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    display: flex; justify-content: center; gap: 0.5rem;
+    padding: 0.7rem 1rem;
+  }
+  .nav-btn {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.45rem 1rem;
+    font-size: 0.75rem; color: var(--muted); cursor: pointer;
+    transition: all 0.2s; font-family: var(--sans); font-weight: 600;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    border-color: var(--teal); color: var(--teal);
+    background: rgba(0,201,167,0.08);
+  }
+
+  @media (max-width: 768px) {
+    .two-col, .three-col, .cheat-grid, .scenario-steps { grid-template-columns: 1fr; }
+    .hero { grid-template-columns: 1fr; }
+    .microbit-display { display: none; }
+    .timer-pills { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── SITE HEADER ── -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="site-logo">
+      <span class="logo-school">St Peters Lutheran College Springfield · 2026</span>
+      <span class="logo-title">Year 7 Technologies</span>
+      <span class="logo-sub">Exam Preparation · 45-Minute Lesson</span>
+    </div>
+    <div class="timer-pills">
+      <div class="pill-item active" onclick="showSection('warmup')"><span class="mins">5</span>Warm Up</div>
+      <div class="pill-item" onclick="showSection('algorithms')"><span class="mins">10</span>Algorithms</div>
+      <div class="pill-item" onclick="showSection('python')"><span class="mins">10</span>Python</div>
+      <div class="pill-item" onclick="showSection('binary')"><span class="mins">10</span>Binary</div>
+      <div class="pill-item" onclick="showSection('practice')"><span class="mins">10</span>Practice</div>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div>
+    <div class="hero-badge">🎓 45-Minute Exam Prep Lesson</div>
+    <h1>Website Notification<br>System</h1>
+    <p>Today you'll learn algorithms, Python coding, binary-to-LED grids, and pseudocode — all the skills you need for tomorrow's exam.</p>
+    <div class="topic-chips">
+      <span class="chip">Algorithms</span>
+      <span class="chip">Python</span>
+      <span class="chip">Binary</span>
+      <span class="chip">Pseudocode</span>
+      <span class="chip">micro:bit</span>
+      <span class="chip">Trace Tables</span>
+    </div>
+  </div>
+  <div class="microbit-display">
+    <div class="mb-label">BBC micro:bit v2</div>
+    <div class="led-grid" id="heroLedGrid"></div>
+    <div class="mb-buttons">
+      <button class="mb-btn" id="btnA" onmousedown="pressButton(true)" onmouseup="pressButton(false)" ontouchstart="pressButton(true)" ontouchend="pressButton(false)">[ A ]</button>
+      <button class="mb-btn">[ B ]</button>
+    </div>
+    <div style="text-align:center; font-size:0.6rem; color:var(--muted); margin-top:0.5rem;">Hold Button A!</div>
+  </div>
+</section>
+
+<main>
+
+<!-- ══ SECTION 1: WARM UP ══ -->
+<div class="lesson-section active" id="sec-warmup">
+  <div class="section-header">
+    <div class="section-num" style="background:var(--coral);">1</div>
+    <div>
+      <div class="section-title">Warm Up — What's in the Exam?</div>
+    </div>
+    <div class="section-time" style="color:var(--coral); border-color:rgba(255,107,107,0.3); background:rgba(255,107,107,0.08);">⏱ 0–5 min</div>
+  </div>
+
+  <div class="teacher-note">Show the exam paper on the projector. Ask students: "What topics feel confusing?" Use think-pair-share before explaining the two main areas.</div>
+
+  <div class="scenario-card">
+    <div class="card-label" style="color:var(--teal)">Today's Scenario</div>
+    <h3 style="font-size:1.3rem; margin-bottom:0.8rem;">🌐 Website Notification System</h3>
+    <p style="color:#a8c0ce; line-height:1.7; font-size:0.92rem;">A local business has a website with a <strong style="color:var(--white)">'Contact Us'</strong> button. They want a BBC micro:bit at their front desk that <strong style="color:var(--white)">alerts staff whenever someone submits a contact form</strong> online. When Button A is pressed (simulating a new website enquiry arriving), the micro:bit should display a <strong style="color:var(--teal)">smiley face</strong>. When there are no new enquiries, the screen should be clear.</p>
+    <div class="scenario-steps">
+      <div class="scenario-step"><div class="icon">🌐</div><p>Customer submits form on website</p></div>
+      <div class="scenario-step"><div class="icon">📡</div><p>Signal arrives → Button A press simulated</p></div>
+      <div class="scenario-step"><div class="icon">😊</div><p>micro:bit shows smiley face on LEDs</p></div>
+      <div class="scenario-step"><div class="icon">❌</div><p>Button released → screen clears</p></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-label" style="color:var(--coral)">Topic 1 · Data Representation</div>
+      <h3>Binary & LED Grids</h3>
+      <p>How computers store and show information using 1s and 0s. <strong style="color:var(--white)">Tested in Question 4.</strong></p>
+      <div class="info teal" style="margin-top:0.8rem;"><strong>Grade criteria</strong> Representation of data with integers and binary</div>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color:var(--sky)">Topic 2 · Processes & Design</div>
+      <h3>Algorithms & Code</h3>
+      <p>Writing step-by-step instructions a computer can follow. <strong style="color:var(--white)">Tested in Questions 1, 2, 3, 5.</strong></p>
+      <div class="info teal" style="margin-top:0.8rem;"><strong>Grade criteria</strong> Design and tracing of algorithms</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SECTION 2: ALGORITHMS ══ -->
+<div class="lesson-section" id="sec-algorithms">
+  <div class="section-header">
+    <div class="section-num" style="background:var(--teal);">2</div>
+    <div class="section-title">Algorithms: WHILE Loops &amp; IF Statements</div>
+    <div class="section-time" style="color:var(--teal); border-color:rgba(0,201,167,0.3); background:rgba(0,201,167,0.08);">⏱ 5–15 min</div>
+  </div>
+
+  <div class="teacher-note">Use the "still hungry" and "contact form" analogies. Ask students for their own real-world WHILE loop examples before introducing the algorithm.</div>
+
+  <div class="info teal">
+    <strong>What is an Algorithm?</strong>
+    A set of step-by-step instructions that tells a computer what to do. All algorithms use 3 building blocks: <strong>Sequence</strong> (in order), <strong>Selection</strong> (IF/ELSE), and <strong>Iteration</strong> (WHILE/REPEAT loops).
+  </div>
+
+  <div class="two-col" style="margin-top:1.5rem;">
+    <div class="card" style="border-color:rgba(78,205,196,0.4);">
+      <div class="card-label" style="color:var(--sky)">🔵 IF Statement</div>
+      <h3 style="color:var(--sky)">Checks condition ONCE</h3>
+      <p style="margin-bottom:1rem;">Checks if something is true, does one action, then continues on — never repeats on its own.</p>
+      <div class="code-box">IF new enquiry THEN
+    show SMILEY face
+ELSE
+    clear screen
+END IF</div>
+      <div class="info teal">Checks once then moves on. Does NOT loop back.</div>
+    </div>
+    <div class="card" style="border-color:rgba(255,107,107,0.4);">
+      <div class="card-label" style="color:var(--coral)">🔴 WHILE Loop</div>
+      <h3 style="color:var(--coral)">Keeps repeating</h3>
+      <p style="margin-bottom:1rem;">Keeps looping as long as the condition is TRUE. When false, it exits and runs the next line.</p>
+      <div class="code-box">WHILE Button A pressed DO
+    show SMILEY face
+END WHILE
+clear screen</div>
+      <div class="info coral">Loops until button released. Then clear screen runs.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="color:var(--gold)">Trace Table — follow the algorithm step by step</div>
+    <h3>What happens in the Website Notification Algorithm?</h3>
+    <table class="trace-table">
+      <tr><th>Step</th><th>Button A State</th><th>Loop Running?</th><th>Output on micro:bit</th></tr>
+      <tr><td>1</td><td>Not pressed</td><td><span class="no">✗ No</span></td><td>Nothing — blank screen</td></tr>
+      <tr><td>2</td><td>Pressed</td><td><span class="yes">✓ Yes</span></td><td>Smiley face displayed 😊</td></tr>
+      <tr><td>3</td><td>Held down</td><td><span class="yes">✓ Yes</span></td><td>Smiley face continues</td></tr>
+      <tr><td>4</td><td>Released</td><td><span class="no">✗ No</span></td><td>Screen clears (blank)</td></tr>
+    </table>
+    <div class="info gold" style="margin-top:0.8rem;"><strong>Key point</strong> The WHILE loop exits the instant Button A is released. Then 'clear screen' runs immediately after.</div>
+  </div>
+
+  <div class="card" style="border-color:rgba(132,94,194,0.4);">
+    <div class="card-label" style="color:var(--purple)">✏️ Quick Activity (2 min)</div>
+    <p style="margin-bottom:0.8rem;">In pairs, write your own real-world WHILE loop using this template:</p>
+    <div class="info purple">"WHILE __________________, I keep __________________. When I stop, I __________________."</div>
+    <div class="answer-lines"><div class="answer-line"></div></div>
+    <p style="font-size:0.78rem; color:var(--muted); margin-top:0.5rem;">Examples: WHILE music is playing → keep dancing; WHILE phone battery is charging → show charging icon</p>
+  </div>
+</div>
+
+<!-- ══ SECTION 3: PYTHON ══ -->
+<div class="lesson-section" id="sec-python">
+  <div class="section-header">
+    <div class="section-num" style="background:var(--gold);">3</div>
+    <div class="section-title">Python Code for micro:bit</div>
+    <div class="section-time" style="color:var(--gold); border-color:rgba(255,209,102,0.3); background:rgba(255,209,102,0.08);">⏱ 15–25 min</div>
+  </div>
+
+  <div class="teacher-note">Show the pseudocode and Python side by side. Ask students to point out which Python line matches which pseudocode line. This directly links Q1 and Q2.</div>
+
+  <table class="styled-table">
+    <tr><th>Python Command</th><th>What it does</th><th>When to use it</th></tr>
+    <tr><td>from microbit import *</td><td>Loads all micro:bit tools</td><td>Always — first line of every program</td></tr>
+    <tr><td>while True:</td><td>Runs the code forever</td><td>When the program should never stop</td></tr>
+    <tr><td>button_a.is_pressed()</td><td>Returns True if Button A is held down</td><td>To check for a website notification</td></tr>
+    <tr><td>display.show(Image.HAPPY)</td><td>Shows a smiley face on LEDs</td><td>When a new enquiry arrives</td></tr>
+    <tr><td>display.clear()</td><td>Turns all LEDs off</td><td>When no new enquiries</td></tr>
+    <tr><td>sleep(1000)</td><td>Pauses for 1 second</td><td>When you need a delay</td></tr>
+  </table>
+
+  <div class="two-col" style="margin-top:1.5rem;">
+    <div class="card">
+      <div class="card-label" style="color:var(--teal)">Pseudocode</div>
+      <div class="code-box"><span class="code-comment"># Run forever</span>
+<span class="code-comment"># If enquiry arrived</span>
+WHILE Button A pressed DO
+    show SMILEY
+END WHILE
+clear screen</div>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color:var(--gold)">Python (micro:bit)</div>
+      <div class="code-box"><span class="code-comment">from microbit import *</span>
+<span class="code-keyword">while</span> True:
+    <span class="code-keyword">if</span> button_a.is_pressed():
+        display.show(Image.HAPPY)
+    <span class="code-keyword">else</span>:
+        display.clear()</div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(132,94,194,0.4);">
+    <div class="card-label" style="color:var(--purple)">✏️ Activity (3 min)</div>
+    <p style="margin-bottom:1rem;">Write Python for a micro:bit that shows a HEART ❤️ when Button B is pressed, and nothing when it's not.</p>
+    <div class="answer-lines">
+      <div class="answer-line"></div><div class="answer-line"></div>
+      <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    </div>
+    <button class="reveal-btn" onclick="toggleReveal('py-activity')">▶ Show Answer</button>
+    <div class="model-answer" id="py-activity">
+      <div class="code-box">from microbit import *
+while True:
+    if button_b.is_pressed():
+        display.show(Image.HEART)
+    else:
+        display.clear()</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SECTION 4: BINARY ══ -->
+<div class="lesson-section" id="sec-binary">
+  <div class="section-header">
+    <div class="section-num" style="background:var(--purple);">4</div>
+    <div class="section-title">Binary Code → LED Grid</div>
+    <div class="section-time" style="color:var(--purple); border-color:rgba(132,94,194,0.3); background:rgba(132,94,194,0.08);">⏱ 25–35 min</div>
+  </div>
+
+  <div class="teacher-note">Draw a 5×5 grid on the whiteboard. Call out binary digits one at a time — have students shout "ON" or "OFF" before you shade the square. Then reveal the heart.</div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-label" style="color:var(--gold)">The Rules</div>
+      <div class="info gold"><strong>1 = LED ON (shade the square)</strong></div>
+      <div class="info coral"><strong>0 = LED OFF (leave blank)</strong></div>
+      <div class="info teal" style="margin-top:0.5rem;"><strong>Total: 25 digits = 5 rows × 5 columns</strong> Read left → right, top → bottom</div>
+      <h3 style="margin-top:1.2rem; margin-bottom:0.6rem; font-size:0.95rem; color:var(--white);">Step-by-Step Method</h3>
+      <ol style="padding-left:1.2rem; font-size:0.88rem; color:#a8c0ce; line-height:2.2;">
+        <li>Write out all 25 binary digits</li>
+        <li>Split into 5 groups of 5 (one per row)</li>
+        <li>For each row: shade squares where digit = <strong style="color:var(--coral)">1</strong></li>
+        <li>Leave squares blank where digit = <strong style="color:var(--muted)">0</strong></li>
+      </ol>
+    </div>
+    <div class="card">
+      <div class="card-label" style="color:var(--coral)">Heart Example: 0101011111111110111000100</div>
+      <div class="binary-demo">
+        <div>
+          <p style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">Split into rows:</p>
+          <div class="binary-rows">
+            <div>Row 1: <span class="bit-0">0</span><span class="bit-1">1</span><span class="bit-0">0</span><span class="bit-1">1</span><span class="bit-0">0</span></div>
+            <div>Row 2: <span class="bit-1">1</span><span class="bit-1">1</span><span class="bit-1">1</span><span class="bit-1">1</span><span class="bit-1">1</span></div>
+            <div>Row 3: <span class="bit-1">1</span><span class="bit-1">1</span><span class="bit-1">1</span><span class="bit-1">1</span><span class="bit-1">1</span></div>
+            <div>Row 4: <span class="bit-0">0</span><span class="bit-1">1</span><span class="bit-1">1</span><span class="bit-1">1</span><span class="bit-0">0</span></div>
+            <div>Row 5: <span class="bit-0">0</span><span class="bit-0">0</span><span class="bit-1">1</span><span class="bit-0">0</span><span class="bit-0">0</span></div>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">Result = ❤️ Heart:</p>
+          <div class="led-demo-grid" id="heartGrid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color:rgba(132,94,194,0.4);">
+    <div class="card-label" style="color:var(--purple)">✏️ Your Turn — Draw the LED Grid</div>
+    <p style="margin-bottom:0.5rem; font-size:0.92rem;">Draw this binary code on the blank 5×5 grid below:</p>
+    <div class="code-box" style="display:inline-block; padding:0.6rem 1rem; margin-bottom:1rem;">0110100011010101010001110</div>
+    <div style="display:flex; gap:3rem; flex-wrap:wrap; align-items:flex-start;">
+      <div>
+        <p style="font-size:0.82rem; color:var(--muted); margin-bottom:0.5rem;">Split it first:</p>
+        <div class="binary-rows" style="font-size:0.82rem;">
+          <div>Row 1: _ _ _ _ _</div>
+          <div>Row 2: _ _ _ _ _</div>
+          <div>Row 3: _ _ _ _ _</div>
+          <div>Row 4: _ _ _ _ _</div>
+          <div>Row 5: _ _ _ _ _</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:0.82rem; color:var(--muted); margin-bottom:0.5rem;">Then shade the grid (click to toggle):</p>
+        <div class="led-demo-grid" id="practiceGrid"></div>
+      </div>
+      <div>
+        <button class="reveal-btn" onclick="revealAnswer()">▶ Show Answer</button>
+        <div id="answer-grid" style="display:none; margin-top:1rem;">
+          <p style="font-size:0.82rem; color:var(--muted); margin-bottom:0.5rem;">Answer:</p>
+          <div class="led-demo-grid" id="answerGrid"></div>
+          <p style="font-size:0.78rem; color:var(--coral); margin-top:0.5rem;">This makes a diamond/arrow shape!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SECTION 5: PRACTICE ══ -->
+<div class="lesson-section" id="sec-practice">
+  <div class="section-header">
+    <div class="section-num" style="background:var(--green);">5</div>
+    <div class="section-title">Practice Questions</div>
+    <div class="section-time" style="color:var(--green); border-color:rgba(6,214,160,0.3); background:rgba(6,214,160,0.08);">⏱ 35–45 min</div>
+  </div>
+
+  <div class="teacher-note">Work through Q5 pseudocode as a class using think-aloud. Students attempt individually. Share model answers in the last 3 minutes.</div>
+
+  <!-- Q1 -->
+  <div class="practice-q">
+    <div class="practice-q-header" style="background:rgba(255,107,107,0.1); border-bottom:1px solid rgba(255,107,107,0.2);">
+      <span style="color:var(--coral); font-family:var(--mono); font-weight:800;">Q1</span>
+      <span>Explain the Algorithm — up to 75 words</span>
+    </div>
+    <div class="practice-q-body">
+      <p style="margin-bottom:0.8rem; font-size:0.9rem; color:#a8c0ce;"><strong style="color:var(--white)">Explain in 2–3 sentences</strong> what this algorithm does. Include what happens while the button is held AND after it is released.</p>
+      <div class="code-box">WHILE button A is pressed DO
+    show image HAPPY
+END WHILE
+clear screen</div>
+      <div class="answer-lines">
+        <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('q1-ans')">▶ Show Model Answer</button>
+      <div class="model-answer" id="q1-ans">
+        <div class="info green"><strong>Model Answer (~65 words)</strong>The program runs continuously in a forever loop. While Button A is held down (simulating a new website enquiry arriving), the micro:bit displays a smiley face on its LED screen to alert staff. Once Button A is released, the WHILE loop exits and the clear screen command runs immediately, turning off all LEDs so the display goes blank and the device waits for the next enquiry.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="practice-q">
+    <div class="practice-q-header" style="background:rgba(0,201,167,0.1); border-bottom:1px solid rgba(0,201,167,0.2);">
+      <span style="color:var(--teal); font-family:var(--mono); font-weight:800;">Q2</span>
+      <span>Write Python Code</span>
+    </div>
+    <div class="practice-q-body">
+      <p style="margin-bottom:0.8rem; font-size:0.9rem; color:#a8c0ce;">Write Python code for the website notification micro:bit. It should: run forever; show a HAPPY face when Button A is pressed; show nothing when not pressed.</p>
+      <div class="answer-lines">
+        <div class="answer-line"></div><div class="answer-line"></div>
+        <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('q2-ans')">▶ Show Model Answer</button>
+      <div class="model-answer" id="q2-ans">
+        <div class="code-box">from microbit import *
+
+# Run forever
+while True:
+    # New website enquiry arrived
+    if button_a.is_pressed():
+        display.show(Image.HAPPY)
+    # No new enquiries
+    else:
+        display.clear()</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 Pseudocode -->
+  <div class="practice-q">
+    <div class="practice-q-header" style="background:rgba(6,214,160,0.1); border-bottom:1px solid rgba(6,214,160,0.2);">
+      <span style="color:var(--green); font-family:var(--mono); font-weight:800;">Q5</span>
+      <span>Write Pseudocode — Server Room Security Monitor</span>
+    </div>
+    <div class="practice-q-body">
+      <p style="margin-bottom:0.8rem; font-size:0.9rem; color:#a8c0ce;">A school places a micro:bit inside a <strong style="color:var(--white)">server room</strong> (where the school website is hosted) to detect if someone opens the door. If light &gt; 150 → display "WARNING" + beep. If light ≤ 150 → show tick (safe). Check every second, run forever.</p>
+
+      <div style="margin-bottom:1rem;">
+        <p style="font-size:0.82rem; color:var(--gold); font-weight:700; margin-bottom:0.5rem;">Word Bank:</p>
+        <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">START</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">FOREVER</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">IF</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">THEN</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">ELSE</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">END IF</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">SENSE</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">OUTPUT</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">WAIT</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">SET</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">&gt;</span>
+          <span style="background:var(--card2); border:1px solid var(--border); border-radius:6px; padding:2px 10px; font-family:var(--mono); font-size:0.78rem; color:var(--teal);">&lt;=</span>
+        </div>
+      </div>
+
+      <ul class="checklist">
+        <li>Program runs forever</li>
+        <li>Read light sensor value</li>
+        <li>IF statement to check the level</li>
+        <li>Light &gt; 150 → OUTPUT "WARNING" + beep</li>
+        <li>Light ≤ 150 → OUTPUT tick symbol</li>
+        <li>WAIT 1 second before checking again</li>
+      </ul>
+
+      <div class="answer-lines" style="margin-top:1rem;">
+        <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+        <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+      </div>
+
+      <button class="reveal-btn" onclick="toggleReveal('q5-ans')">▶ Show Model Answer</button>
+      <div class="model-answer" id="q5-ans">
+        <div class="code-box">START
+FOREVER
+    SET light = SENSE light
+    IF light > 150 THEN
+        OUTPUT "WARNING"
+        OUTPUT beep sound
+    ELSE
+        OUTPUT tick symbol
+    END IF
+    WAIT 1 second
+END FOREVER</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="card" style="margin-top:2rem;">
+    <div class="card-label" style="color:var(--gold)">Quick Knowledge Check</div>
+    <h3 style="margin-bottom:1.5rem;">5 Questions — Test Yourself</h3>
+
+    <div class="quiz-q">
+      <p>1. What does a WHILE loop do that an IF statement does NOT?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,false,'f1')">Checks a condition one time</button>
+        <button class="quiz-opt" onclick="answer(this,true,'f1')">Keeps repeating as long as the condition is true</button>
+        <button class="quiz-opt" onclick="answer(this,false,'f1')">Runs a command only once at startup</button>
+      </div>
+      <div class="quiz-feedback" id="f1"></div>
+    </div>
+
+    <div class="quiz-q">
+      <p>2. In the website notification system, what shows on the micro:bit when Button A is pressed?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,false,'f2')">A warning message</button>
+        <button class="quiz-opt" onclick="answer(this,true,'f2')">A smiley face (HAPPY image)</button>
+        <button class="quiz-opt" onclick="answer(this,false,'f2')">A heart shape</button>
+      </div>
+      <div class="quiz-feedback" id="f2"></div>
+    </div>
+
+    <div class="quiz-q">
+      <p>3. In binary, what does a <strong>1</strong> mean for an LED?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,false,'f3')">The LED is off (dark)</button>
+        <button class="quiz-opt" onclick="answer(this,true,'f3')">The LED is on (lit up)</button>
+        <button class="quiz-opt" onclick="answer(this,false,'f3')">The LED is blinking</button>
+      </div>
+      <div class="quiz-feedback" id="f3"></div>
+    </div>
+
+    <div class="quiz-q">
+      <p>4. In Python on the micro:bit, which command runs code forever?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,false,'f4')"><code>loop forever:</code></button>
+        <button class="quiz-opt" onclick="answer(this,false,'f4')"><code>repeat always:</code></button>
+        <button class="quiz-opt" onclick="answer(this,true,'f4')"><code>while True:</code></button>
+      </div>
+      <div class="quiz-feedback" id="f4"></div>
+    </div>
+
+    <div class="quiz-q">
+      <p>5. In the server room alarm, what happens when light level is 150 or below?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this,false,'f5')">Display "WARNING" and beep</button>
+        <button class="quiz-opt" onclick="answer(this,true,'f5')">Display a tick (room is safe)</button>
+        <button class="quiz-opt" onclick="answer(this,false,'f5')">Turn all LEDs off</button>
+      </div>
+      <div class="quiz-feedback" id="f5"></div>
+    </div>
+
+    <div class="score-box">
+      Score: <span class="score-num" id="scoreNum">0</span> / 5
+    </div>
+  </div>
+
+  <!-- Cheat Sheet -->
+  <div style="margin-top:2rem;">
+    <div class="card-label" style="color:var(--teal); margin-bottom:1rem;">★ Quick Reference Cheat Sheet</div>
+    <div class="cheat-grid">
+      <div class="cheat-card"><div class="cheat-card-hdr" style="background:var(--coral);">Algorithm</div><div class="cheat-card-body">Step-by-step instructions<br>Sequence → Selection<br>→ Iteration</div></div>
+      <div class="cheat-card"><div class="cheat-card-hdr" style="background:var(--teal);">WHILE Loop</div><div class="cheat-card-body">WHILE [condition] DO<br>   [action]<br>END WHILE</div></div>
+      <div class="cheat-card"><div class="cheat-card-hdr" style="background:var(--gold);">IF / ELSE</div><div class="cheat-card-body">IF [condition] THEN<br>   [action]<br>ELSE<br>   [other]<br>END IF</div></div>
+      <div class="cheat-card"><div class="cheat-card-hdr" style="background:var(--purple);">Binary</div><div class="cheat-card-body">1 = LED ON (shade)<br>0 = LED OFF (blank)<br>5 rows x 5 cols = 25</div></div>
+      <div class="cheat-card"><div class="cheat-card-hdr" style="background:var(--coral);">Python</div><div class="cheat-card-body">while True:<br>  if button_a.is_pressed():<br>    display.show(Image.X)<br>  else: display.clear()</div></div>
+      <div class="cheat-card"><div class="cheat-card-hdr" style="background:var(--sky);">Pseudocode Words</div><div class="cheat-card-body">START / STOP<br>FOREVER / WHILE<br>IF / ELSE / END IF<br>SENSE / OUTPUT / WAIT</div></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ── BOTTOM NAV ── -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="showSection('warmup')">🔍 Warm Up</button>
+  <button class="nav-btn" onclick="showSection('algorithms')">🔁 Algorithms</button>
+  <button class="nav-btn" onclick="showSection('python')">🐍 Python</button>
+  <button class="nav-btn" onclick="showSection('binary')">💡 Binary</button>
+  <button class="nav-btn" onclick="showSection('practice')">✏️ Practice</button>
+</nav>
+
+<script>
+// ── Section Navigation ──
+const sections = ['warmup','algorithms','python','binary','practice'];
+const progPct  = { warmup:20, algorithms:40, python:60, binary:80, practice:100 };
+
+function showSection(id) {
+  sections.forEach(s => {
+    document.getElementById('sec-' + s).classList.remove('active');
+  });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.pill-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => { if (b.textContent.toLowerCase().includes(id.slice(0,4))) b.classList.add('active'); });
+  document.querySelectorAll('.pill-item').forEach(b => { if (b.textContent.toLowerCase().includes(id.slice(0,4))) b.classList.add('active'); });
+  document.getElementById('progressFill').style.width = progPct[id] + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Hero LED grid (smiley face) ──
+const smilePattern = "0000000110011001000000000"; // wait - wrong; use proper smiley
+// Smiley: 01010 00000 10001 01110 00000
+const smileOff = "0101000000100010111000000";
+const smileOn  = "0101000000100010111000000";
+const heartBin = "0101011111111110111000100";
+
+function buildGrid(containerId, pattern, clickable=false) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+  for (let i = 0; i < 25; i++) {
+    const led = document.createElement('div');
+    led.className = 'led-demo' + (pattern[i]==='1' ? ' on' : '');
+    if (clickable) {
+      led.addEventListener('click', () => led.classList.toggle('on'));
+    }
+    el.appendChild(led);
+  }
+}
+
+buildGrid('heroLedGrid', '0000000000000000000000000', false);
+buildGrid('heartGrid', heartBin, false);
+buildGrid('practiceGrid', '0000000000000000000000000', true);
+buildGrid('answerGrid', '0110100011010101010001110', false);
+
+// ── Hero button interaction ──
+let buttonHeld = false;
+function pressButton(down) {
+  buttonHeld = down;
+  document.getElementById('btnA').classList.toggle('pressed', down);
+  // Show/hide smiley on hero grid
+  const pattern = down ? smileOff : '0000000000000000000000000';
+  buildGrid('heroLedGrid', pattern, false);
+}
+
+// ── Animate heart on load ──
+setTimeout(() => buildGrid('heartGrid', heartBin, false), 600);
+
+// Animate hero with blinking
+let heroAnim = 0;
+setInterval(() => {
+  if (!buttonHeld) {
+    heroAnim++;
+    const patterns = [
+      '0000000000000000000000000',
+      '0101000000100010111000000',
+    ];
+    buildGrid('heroLedGrid', patterns[heroAnim % 2 === 0 ? 0 : 1], false);
+  }
+}, 1200);
+
+// ── Reveal toggles ──
+function toggleReveal(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('show');
+  event.target.textContent = el.classList.contains('show') ? '▼ Hide Answer' : '▶ Show Model Answer';
+}
+
+// ── Practice grid answer ──
+function revealAnswer() {
+  document.getElementById('answer-grid').style.display = 'block';
+}
+
+// ── Quiz ──
+let score = 0;
+const answered = new Set();
+function answer(btn, correct, feedbackId) {
+  if (answered.has(feedbackId)) return;
+  answered.add(feedbackId);
+  const fb = document.getElementById(feedbackId);
+  if (correct) {
+    btn.classList.add('correct');
+    fb.textContent = '✓ Correct!';
+    fb.className = 'quiz-feedback show correct';
+    score++;
+    document.getElementById('scoreNum').textContent = score;
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '✗ Not quite — check the notes above!';
+    fb.className = 'quiz-feedback show wrong';
+    btn.parentElement.querySelectorAll('.quiz-opt').forEach(b => {
+      if (b.onclick && b.onclick.toString().includes(',true,')) b.classList.add('correct');
+    });
+  }
+}
+</script>
+
+</body>
+</html>
