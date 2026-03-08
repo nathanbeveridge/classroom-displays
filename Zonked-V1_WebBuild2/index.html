@@ -1,58 +1,409 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en-au">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | Zonked Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr B’s Spaceship Game Prototype | Core Loop Analysis & Redesign</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #131a2e;
+        --panel-2: #1a2340;
+        --text: #eef2ff;
+        --muted: #b9c2e0;
+        --accent: #70d6ff;
+        --accent-2: #ffd166;
+        --success: #95e06c;
+        --danger: #ff7b7b;
+        --border: rgba(255,255,255,0.12);
+        --shadow: 0 12px 28px rgba(0,0,0,0.35);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+          radial-gradient(circle at top, #1a2452 0%, #0b1020 45%, #060912 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .page {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, rgba(112,214,255,0.14), rgba(255,209,102,0.10));
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero h1 {
+        margin: 0 0 10px 0;
+        font-size: 2rem;
+        line-height: 1.1;
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      .badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .badge {
+        background: rgba(255,255,255,0.08);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 0.92rem;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 1.7fr 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .panel {
+        background: rgba(19,26,46,0.92);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .panel-header {
+        padding: 16px 20px;
+        background: rgba(255,255,255,0.04);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .panel-header h2,
+      .panel-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .panel-body {
+        padding: 20px;
+      }
+
+      .info-card {
+        margin-bottom: 20px;
+      }
+
+      .info-card:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-card h3 {
+        margin: 0 0 10px 0;
+        font-size: 1rem;
+        color: var(--accent-2);
+      }
+
+      .info-card p,
+      .info-card li {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .info-card ul,
+      .info-card ol {
+        margin: 10px 0 0 20px;
+        padding: 0;
+      }
+
+      .question-box {
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-top: 12px;
+      }
+
+      .question-box strong {
+        color: var(--text);
+      }
+
+      #unity-container {
+        width: 100%;
+        background: #000;
+      }
+
+      #unity-container.unity-desktop {
+        margin: 0 auto;
+      }
+
+      #unity-canvas {
+        width: 100%;
+        height: auto;
+        background: #111;
+      }
+
+      #unity-loading-bar {
+        display: none;
+      }
+
+      #unity-warning {
+        margin: 12px 20px 0 20px;
+      }
+
+      #unity-footer {
+        padding: 10px 14px 14px 14px;
+      }
+
+      .reflection-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .reflection-item {
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+      }
+
+      .reflection-item h4 {
+        margin: 0 0 8px 0;
+        color: var(--success);
+        font-size: 0.98rem;
+      }
+
+      .reflection-item p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .footer-note {
+        margin-top: 24px;
+        text-align: centre;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .page {
+          padding: 16px;
+        }
+
+        .hero h1 {
+          font-size: 1.6rem;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
+    <div class="page">
+      <section class="hero">
+        <h1>🚀 Mr B’s Spaceship Game Prototype</h1>
+        <p>
+          Welcome to the prototype for our Year 9 Game Development task,
+          <strong>Designing and Tuning the Core Gameplay Loop</strong>.
+          Play the game, analyse the gameplay loop, and think about how changing mechanics
+          could improve the experience for a particular stakeholder.
+        </p>
+        <div class="badge-row">
+          <div class="badge">Year 9 Digital Technologies</div>
+          <div class="badge">Core Gameplay Loop</div>
+          <div class="badge">Mechanics → Dynamics → Experience</div>
+          <div class="badge">Analysis & Redesign</div>
         </div>
+      </section>
+
+      <div class="layout">
+        <main class="panel">
+          <div class="panel-header">
+            <h2>Play the Prototype</h2>
+          </div>
+          <div class="panel-body" style="padding: 0;">
+            <div id="unity-container" class="unity-desktop">
+              <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+
+              <div id="unity-loading-bar">
+                <div id="unity-logo"></div>
+                <div id="unity-progress-bar-empty">
+                  <div id="unity-progress-bar-full"></div>
+                </div>
+              </div>
+
+              <div id="unity-warning"></div>
+
+              <div id="unity-footer">
+                <div id="unity-logo-title-footer"></div>
+                <div id="unity-fullscreen-button"></div>
+                <div id="unity-build-title">Mr B’s Spaceship Game Prototype</div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <aside class="panel">
+          <div class="panel-header">
+            <h3>Task Information</h3>
+          </div>
+          <div class="panel-body">
+            <div class="info-card">
+              <h3>What to do</h3>
+              <ol>
+                <li>Play the prototype at least two or three times.</li>
+                <li>Identify the repeating core gameplay loop.</li>
+                <li>Notice how the mechanics affect player choices and feelings.</li>
+                <li>Propose changes to better suit a chosen stakeholder.</li>
+              </ol>
+            </div>
+
+            <div class="info-card">
+              <h3>Controls</h3>
+              <ul>
+                <li>Use the mouse/trackpad to control the spaceship.</li>
+                <li>Avoid hazards.</li>
+                <li>Try full screen for a better view.</li>
+              </ul>
+            </div>
+
+            <div class="info-card">
+              <h3>As you play, think about…</h3>
+
+              <div class="question-box">
+                <strong>Core Loop</strong><br>
+                What actions does the player repeat again and again?
+              </div>
+
+              <div class="question-box">
+                <strong>Mechanics</strong><br>
+                What rules, objects, movement, scoring or obstacles shape the game?
+              </div>
+
+              <div class="question-box">
+                <strong>Dynamics</strong><br>
+                How do those mechanics affect player behaviour while playing?
+              </div>
+
+              <div class="question-box">
+                <strong>Experience</strong><br>
+                Does the game feel relaxing, tense, chaotic, strategic, satisfying, frustrating, or something else?
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Zonked Demo</div>
+
+      <section class="panel" style="margin-top: 24px;">
+        <div class="panel-header">
+          <h2>Reflection and Redesign Prompts</h2>
+        </div>
+        <div class="panel-body">
+          <div class="reflection-grid">
+            <div class="reflection-item">
+              <h4>1. Describe the core gameplay loop</h4>
+              <p>
+                Example structure: start → move → avoid → collect → score → repeat.
+              </p>
+            </div>
+
+            <div class="reflection-item">
+              <h4>2. Identify mechanics that could be tuned</h4>
+              <p>
+                Consider speed, difficulty, scoring, movement, hazards, power-ups, lives, timers, or level layout.
+              </p>
+            </div>
+
+            <div class="reflection-item">
+              <h4>3. Choose a stakeholder</h4>
+              <p>
+                How would this game need to change for a busy parent, a competitive teen player, or a retired puzzle enthusiast?
+              </p>
+            </div>
+
+            <div class="reflection-item">
+              <h4>4. Suggest redesign ideas</h4>
+              <p>
+                Propose changes and explain how they would improve the gameplay experience for that stakeholder.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer-note">
+        Built in Unity WebGL, hosted for class use via GitHub Pages.
       </div>
     </div>
+
     <script>
       var canvas = document.querySelector("#unity-canvas");
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
       function unityShowBanner(msg, type) {
         var warningBanner = document.querySelector("#unity-warning");
+
         function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+          warningBanner.style.display = warningBanner.children.length ? "block" : "none";
         }
-        var div = document.createElement('div');
+
+        var div = document.createElement("div");
         div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+        div.style.marginBottom = "8px";
+        div.style.borderRadius = "10px";
+        div.style.padding = "10px 12px";
+        div.style.fontSize = "0.95rem";
+
+        if (type == "error") {
+          div.style.background = "rgba(255, 80, 80, 0.18)";
+          div.style.border = "1px solid rgba(255, 120, 120, 0.5)";
+          div.style.color = "#fff";
+        } else {
+          div.style.background = "rgba(255, 209, 102, 0.16)";
+          div.style.border = "1px solid rgba(255, 209, 102, 0.45)";
+          div.style.color = "#fff";
+
           setTimeout(function() {
-            warningBanner.removeChild(div);
+            if (warningBanner.contains(div)) {
+              warningBanner.removeChild(div);
+            }
             updateBannerVisibility();
           }, 5000);
         }
+
+        warningBanner.appendChild(div);
         updateBannerVisibility();
       }
 
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/083d16499d4598b52909a3962a9345e1.loader.js";
+
       var config = {
         arguments: [],
         dataUrl: buildUrl + "/61a8e02977e452fb3e4d122cfed1359b.data.unityweb",
@@ -60,74 +411,44 @@
         codeUrl: buildUrl + "/baaf5de0dde537b7a1c387a77d7d71bf.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "LearnerXperienceSolutions",
-        productName: "Zonked Demo",
+        productName: "Mr B’s Spaceship Game Prototype",
         productVersion: "1.0",
-        showBanner: unityShowBanner,
-        // errorHandler: function(err, url, line) {
-        //    alert("error " + err + " occurred at line " + line);
-        //    // Return 'true' if you handled this error and don't want Unity
-        //    // to process it further, 'false' otherwise.
-        //    return true;
-        // },
+        showBanner: unityShowBanner
       };
 
-      // By default, Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
-      // If you would like all file writes inside Unity Application.persistentDataPath
-      // directory to automatically persist so that the contents are remembered when
-      // the user revisits the site the next time, uncomment the following line:
-      // config.autoSyncPersistentDataPath = true;
-      // This autosyncing is currently not the default behavior to avoid regressing
-      // existing user projects that might rely on the earlier manual
-      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
-      // expected to change.
-
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement("meta");
+        meta.name = "viewport";
+        meta.content = "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
+        document.getElementsByTagName("head")[0].appendChild(meta);
 
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
         document.querySelector("#unity-container").className = "unity-mobile";
         canvas.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-
       } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+        canvas.style.width = "100%";
+        canvas.style.height = "auto";
+        canvas.style.aspectRatio = "16 / 10";
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
 
       var script = document.createElement("script");
       script.src = loaderUrl;
+
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
-
-              }).catch((message) => {
-                alert(message);
-              });
-            };
+          document.querySelector("#unity-progress-bar-full").style.width = (100 * progress) + "%";
+        }).then((unityInstance) => {
+          document.querySelector("#unity-loading-bar").style.display = "none";
+          document.querySelector("#unity-fullscreen-button").onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+        }).catch((message) => {
+          alert(message);
+        });
+      };
 
       document.body.appendChild(script);
-
     </script>
   </body>
 </html>
