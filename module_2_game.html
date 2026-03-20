@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Module 2 File Organizer</title>
+  <style>
+    body { font-family: Arial; text-align: center; }
+    .files { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 20px; }
+    .file { width: 100px; height: 100px; background: #e0f7fa; border: 2px solid #0288d1; border-radius: 8px; padding: 10px; cursor: move; text-align: center; font-size: 12px; }
+    .folders { display: flex; justify-content: center; gap: 30px; margin: 40px; }
+    .folder { width: 180px; height: 180px; background: #fff9c4; border: 3px dashed #fbc02d; border-radius: 12px; padding: 10px; text-align: center; font-weight: bold; }
+    .correct { background: #c8e6c9 !important; border-color: #4caf50 !important; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h2>Module 2 Challenge: Organise Your Files!</h2>
+  <p>Drag each file to the correct folder. School work → OneDrive with good names!</p>
+
+  <div class="files">
+    <div class="file" draggable="true" id="f1">BridgeDesign.docx</div>
+    <div class="file" draggable="true" id="f2">doc1.docx</div>
+    <div class="file" draggable="true" id="f3">Vacation.jpg</div>
+    <div class="file" draggable="true" id="f4">2026-T1-Science-Report-Final.pdf</div>
+    <!-- Add 2–4 more -->
+  </div>
+
+  <div class="folders">
+    <div class="folder" ondrop="drop(event)" ondragover="allowDrop(event)" id="good">OneDrive – Year 7</div>
+    <div class="folder" ondrop="drop(event)" ondragover="allowDrop(event)" id="badname">Needs Better Name</div>
+    <div class="folder" ondrop="drop(event)" ondragover="allowDrop(event)" id="local">Local Drive Only</div>
+  </div>
+
+  <div id="win" class="hidden"><h3>Perfect! Your files are organised. +50 XP 🎉</h3></div>
+
+  <script>
+    function allowDrop(ev) { ev.preventDefault(); }
+
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+
+    function drop(ev) {
+      ev.preventDefault();
+      const data = ev.dataTransfer.getData("text");
+      const file = document.getElementById(data);
+      const folderId = ev.target.id;
+
+      // Simple logic example
+      if ((folderId === "good" && data === "f1" || data === "f4") ||
+          (folderId === "badname" && data === "f2") ||
+          (folderId === "local" && data === "f3")) {
+        ev.target.appendChild(file);
+        file.classList.add("correct");
+      } else {
+        alert("Hint: School work goes in OneDrive with clear names!");
+      }
+
+      // Check if all files placed (optional win condition)
+      if (document.querySelectorAll('.file:not(.correct)').length === 0) {
+        document.getElementById("win").classList.remove("hidden");
+      }
+    }
+
+    // Make files draggable
+    document.querySelectorAll('.file').forEach(f => f.ondragstart = drag);
+  </script>
+</body>
+</html>
