@@ -142,81 +142,83 @@
   <button onclick="location.reload()">Reset Game</button>
 
   <script>
-    const files = document.querySelectorAll('.file');
-    const folders = document.querySelectorAll('.folder');
-    const hintDiv = document.getElementById('hint');
-    const winDiv = document.getElementById('win');
+  const files = document.querySelectorAll('.file');
+  const folders = document.querySelectorAll('.folder');
+  const hintDiv = document.getElementById('hint');
+  const winDiv = document.getElementById('win');
 
-    // Make files draggable
-    files.forEach(file => {
-      file.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', file.innerText.trim());
-        file.style.opacity = '0.5';
-      });
-      file.addEventListener('dragend', () => {
-        file.style.opacity = '1';
-      });
+  files.forEach(file => {
+    file.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', file.innerText.trim());
+      file.style.opacity = '0.5';
     });
-
-    // Folder drag events
-    folders.forEach(folder => {
-      folder.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        folder.classList.add('drag-over');
-      });
-      folder.addEventListener('dragleave', () => {
-        folder.classList.remove('drag-over');
-      });
-      folder.addEventListener('drop', (e) => {
-        e.preventDefault();
-        folder.classList.remove('drag-over');
-        const fileName = e.dataTransfer.getData('text/plain');
-        const draggedFile = [...files].find(f => f.innerText.trim() === fileName);
-
-        if (!draggedFile) return;
-
-        const folderId = folder.id;
-        let isCorrect = false;
-
-        const lowerName = fileName.toLowerCase();
-
-        if (folderId === 'good') {
-          // School files: contain year-term or common school extensions
-          if (lowerName.includes('2026-t') || lowerName.includes('.docx') || lowerName.includes('.pdf')) {
-            isCorrect = true;
-          }
-        } else if (folderId === 'badname') {
-          if (lowerName === 'doc1.docx') {
-            isCorrect = true;
-          }
-        } else if (folderId === 'local') {
-          if (lowerName.includes('vacation') || lowerName.includes('game') || lowerName.includes('.png') || lowerName.includes('.jpg')) {
-            isCorrect = true;
-          }
-        }
-
-        if (isCorrect) {
-          folder.appendChild(draggedFile);
-          draggedFile.classList.add('correct');
-          draggedFile.draggable = false; // prevent re-drag
-        } else {
-          hintDiv.innerText = 'Hint: School work goes in OneDrive with clear names!';
-          setTimeout(() => { hintDiv.innerText = ''; }, 4000);
-        }
-
-        // Check if all files are placed correctly
-        const remaining = document.querySelectorAll('.file:not(.correct)');
-        if (remaining.length === 0) {
-          winDiv.style.display = 'block';
-          confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 }
-          });
-        }
-      });
+    file.addEventListener('dragend', () => {
+      file.style.opacity = '1';
     });
-  </script>
+  });
+
+  folders.forEach(folder => {
+    folder.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      folder.classList.add('drag-over');
+    });
+    folder.addEventListener('dragleave', () => {
+      folder.classList.remove('drag-over');
+    });
+    folder.addEventListener('drop', (e) => {
+      e.preventDefault();
+      folder.classList.remove('drag-over');
+      const fileName = e.dataTransfer.getData('text/plain');
+      const draggedFile = [...files].find(f => f.innerText.trim() === fileName);
+
+      if (!draggedFile) return;
+
+      const folderId = folder.id;
+      let isCorrect = false;
+      const lowerName = fileName.toLowerCase();
+
+      if (folderId === 'good') {
+        // School files: must have year-term OR be descriptive (.docx/.pdf longer than ~15 chars)
+        if (
+          lowerName.includes('2026-t') ||
+          (lowerName.includes('.docx') && lowerName.length > 18) ||
+          (lowerName.includes('.pdf') && lowerName.length > 18)
+        ) {
+          isCorrect = true;
+        }
+      } else if (folderId === 'badname') {
+        if (lowerName.includes('doc1') || lowerName.includes('untitled') || lowerName.length < 10) {
+          isCorrect = true;
+        }
+      } else if (folderId === 'local') {
+        if (lowerName.includes('vacation') || lowerName.includes('game') || 
+            lowerName.includes('.png') || lowerName.includes('.jpg') || lowerName.includes('.jpeg')) {
+          isCorrect = true;
+        }
+      }
+
+      if (isCorrect) {
+        folder.appendChild(draggedFile);
+        draggedFile.classList.add('correct');
+        draggedFile.draggable = false;
+      } else {
+        hintDiv.innerText = 'Hint: School work goes in OneDrive with clear, descriptive names!';
+        setTimeout(() => { hintDiv.innerText = ''; }, 4000);
+      }
+
+      // Win check
+      const remaining = document.querySelectorAll('.file:not(.correct)');
+      if (remaining.length === 0) {
+        winDiv.style.display = 'block';
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    });
+  });
+</script>
 
 </body>
 </html>
