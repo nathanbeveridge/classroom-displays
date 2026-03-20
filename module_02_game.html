@@ -149,7 +149,7 @@
 
   files.forEach(file => {
     file.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', file.innerText.trim());
+      e.dataTransfer.setData('text/plain', file.getAttribute('data-id'));
       file.style.opacity = '0.5';
     });
     file.addEventListener('dragend', () => {
@@ -168,31 +168,27 @@
     folder.addEventListener('drop', (e) => {
       e.preventDefault();
       folder.classList.remove('drag-over');
-      const fileName = e.dataTransfer.getData('text/plain');
-      const draggedFile = [...files].find(f => f.innerText.trim() === fileName);
+
+      const fileId = e.dataTransfer.getData('text/plain');
+      const draggedFile = document.querySelector(`[data-id="${fileId}"]`);
 
       if (!draggedFile) return;
 
       const folderId = folder.id;
       let isCorrect = false;
-      const lowerName = fileName.toLowerCase();
 
+      // Use fileId for decisions (stable & no emoji issues)
       if (folderId === 'good') {
-        // School files: must have year-term OR be descriptive (.docx/.pdf longer than ~15 chars)
-        if (
-          lowerName.includes('2026-t') ||
-          (lowerName.includes('.docx') && lowerName.length > 18) ||
-          (lowerName.includes('.pdf') && lowerName.length > 18)
-        ) {
+        // These IDs are school work with good/descriptive names
+        if (['bridge', 'science', 'english', 'math'].includes(fileId)) {
           isCorrect = true;
         }
       } else if (folderId === 'badname') {
-        if (lowerName.includes('doc1') || lowerName.includes('untitled') || lowerName.length < 10) {
+        if (fileId === 'badname') {
           isCorrect = true;
         }
       } else if (folderId === 'local') {
-        if (lowerName.includes('vacation') || lowerName.includes('game') || 
-            lowerName.includes('.png') || lowerName.includes('.jpg') || lowerName.includes('.jpeg')) {
+        if (['vacation', 'game'].includes(fileId)) {
           isCorrect = true;
         }
       }
