@@ -119,13 +119,13 @@
   <div id="hint"></div>
 
   <div class="files">
-    <div class="file" draggable="true">📄 BridgeDesign.docx</div>
-    <div class="file" draggable="true">📄 doc1.docx</div>
-    <div class="file" draggable="true">🖼️ Vacation.jpg</div>
-    <div class="file" draggable="true">📄 2026-T1-Science-Report-Final.pdf</div>
-    <div class="file" draggable="true">📄 2026-T1-English-Essay-Draft.docx</div>
-    <div class="file" draggable="true">🎮 GameScreenshot.png</div>
-    <div class="file" draggable="true">📝 MathNotes.pdf</div>
+    <div class="file" draggable="true" data-id="bridge">📄 BridgeDesign.docx</div>
+    <div class="file" draggable="true" data-id="badname">📄 doc1.docx</div>
+    <div class="file" draggable="true" data-id="vacation">🖼️ Vacation.jpg</div>
+    <div class="file" draggable="true" data-id="science">📄 2026-T1-Science-Report-Final.pdf</div>
+    <div class="file" draggable="true" data-id="english">📄 2026-T1-English-Essay-Draft.docx</div>
+    <div class="file" draggable="true" data-id="game">🎮 GameScreenshot.png</div>
+    <div class="file" draggable="true" data-id="math">📝 MathNotes.pdf</div>
   </div>
 
   <div class="folders">
@@ -142,79 +142,81 @@
   <button onclick="location.reload()">Reset Game</button>
 
   <script>
-  const files = document.querySelectorAll('.file');
-  const folders = document.querySelectorAll('.folder');
-  const hintDiv = document.getElementById('hint');
-  const winDiv = document.getElementById('win');
+    const files = document.querySelectorAll('.file');
+    const folders = document.querySelectorAll('.folder');
+    const hintDiv = document.getElementById('hint');
+    const winDiv = document.getElementById('win');
 
-  files.forEach(file => {
-    file.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', file.getAttribute('data-id'));
-      file.style.opacity = '0.5';
+    // Make files draggable – transfer data-id
+    files.forEach(file => {
+      file.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', file.getAttribute('data-id'));
+        file.style.opacity = '0.5';
+      });
+      file.addEventListener('dragend', () => {
+        file.style.opacity = '1';
+      });
     });
-    file.addEventListener('dragend', () => {
-      file.style.opacity = '1';
-    });
-  });
 
-  folders.forEach(folder => {
-    folder.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      folder.classList.add('drag-over');
-    });
-    folder.addEventListener('dragleave', () => {
-      folder.classList.remove('drag-over');
-    });
-    folder.addEventListener('drop', (e) => {
-      e.preventDefault();
-      folder.classList.remove('drag-over');
+    // Folder drag events
+    folders.forEach(folder => {
+      folder.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        folder.classList.add('drag-over');
+      });
+      folder.addEventListener('dragleave', () => {
+        folder.classList.remove('drag-over');
+      });
+      folder.addEventListener('drop', (e) => {
+        e.preventDefault();
+        folder.classList.remove('drag-over');
 
-      const fileId = e.dataTransfer.getData('text/plain');
-      const draggedFile = document.querySelector(`[data-id="${fileId}"]`);
+        const fileId = e.dataTransfer.getData('text/plain');
+        const draggedFile = document.querySelector(`[data-id="${fileId}"]`);
 
-      if (!draggedFile) return;
+        if (!draggedFile) return;
 
-      const folderId = folder.id;
-      let isCorrect = false;
+        const folderId = folder.id;
+        let isCorrect = false;
 
-      // Use fileId for decisions (stable & no emoji issues)
-      if (folderId === 'good') {
-        // These IDs are school work with good/descriptive names
-        if (['bridge', 'science', 'english', 'math'].includes(fileId)) {
-          isCorrect = true;
+        // Logic based on data-id
+        if (folderId === 'good') {
+          // School work with good/descriptive names
+          if (['bridge', 'science', 'english', 'math'].includes(fileId)) {
+            isCorrect = true;
+          }
+        } else if (folderId === 'badname') {
+          if (fileId === 'badname') {
+            isCorrect = true;
+          }
+        } else if (folderId === 'local') {
+          if (['vacation', 'game'].includes(fileId)) {
+            isCorrect = true;
+          }
         }
-      } else if (folderId === 'badname') {
-        if (fileId === 'badname') {
-          isCorrect = true;
-        }
-      } else if (folderId === 'local') {
-        if (['vacation', 'game'].includes(fileId)) {
-          isCorrect = true;
-        }
-      }
 
-      if (isCorrect) {
-        folder.appendChild(draggedFile);
-        draggedFile.classList.add('correct');
-        draggedFile.draggable = false;
-      } else {
-        hintDiv.innerText = 'Hint: School work goes in OneDrive with clear, descriptive names!';
-        setTimeout(() => { hintDiv.innerText = ''; }, 4000);
-      }
+        if (isCorrect) {
+          folder.appendChild(draggedFile);
+          draggedFile.classList.add('correct');
+          draggedFile.draggable = false; // prevent re-dragging
+        } else {
+          hintDiv.innerText = 'Hint: School work goes in OneDrive with clear, descriptive names!';
+          setTimeout(() => { hintDiv.innerText = ''; }, 4000);
+        }
 
-      // Win check
-      const remaining = document.querySelectorAll('.file:not(.correct)');
-      if (remaining.length === 0) {
-        winDiv.style.display = 'block';
-        confetti({
-          particleCount: 150,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-      }
+        // Check win condition
+        const remaining = document.querySelectorAll('.file:not(.correct)');
+        if (remaining.length === 0) {
+          winDiv.style.display = 'block';
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+        }
+      });
     });
-  });
-</script>
+  </script>
 
 </body>
 </html>
