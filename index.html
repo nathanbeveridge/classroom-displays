@@ -6,8 +6,9 @@
 <title>Mr Beveridge — Classroom Displays</title>
 <style>
   :root {
-    --bg: #0a0a18;
-    --panel: #10102a;
+    --bg: #151b32;
+    --panel: #202944;
+    --panel-soft: #26304e;
     --teal: #00e5cc;
     --pink: #ff4da6;
     --yellow: #ffd700;
@@ -15,8 +16,10 @@
     --blue: #4d9fff;
     --green: #39e75f;
     --purple: #c084fc;
-    --white: #e8f0ff;
-    --dim: #6677aa;
+    --white: #f4f8ff;
+    --text-muted: #c4d1ec;
+    --text-subtle: #9fb0d4;
+    --line: #3b466a;
     --font: 'Courier New', Courier, monospace;
     --sans: Arial, Helvetica, sans-serif;
   }
@@ -30,7 +33,7 @@
   body::after {
     content: '';
     position: fixed; inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 6px);
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.035) 3px, rgba(0,0,0,0.035) 6px);
     pointer-events: none; z-index: 9999;
   }
 
@@ -38,14 +41,14 @@
   .hero {
     text-align: center;
     padding: 60px 32px 48px;
-    background: radial-gradient(ellipse at 30% 50%, #00e5cc0a 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 50%, #ff4da60a 0%, transparent 60%),
+    background: radial-gradient(ellipse at 30% 50%, #00e5cc18 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 50%, #ff4da614 0%, transparent 60%),
                 var(--bg);
-    border-bottom: 1px solid #1e1e44;
+    border-bottom: 1px solid var(--line);
   }
   .hero-eyebrow {
     font-family: var(--font); font-size: 0.72rem; letter-spacing: 4px;
-    color: var(--dim); text-transform: uppercase; margin-bottom: 16px;
+    color: var(--text-muted); text-transform: uppercase; margin-bottom: 16px;
   }
   .hero h1 {
     font-family: var(--font); font-size: clamp(1.8rem, 4vw, 3rem);
@@ -54,7 +57,7 @@
     margin-bottom: 10px;
   }
   .hero .sub {
-    font-size: 1rem; color: var(--dim); letter-spacing: 1px; margin-bottom: 4px;
+    font-size: 1rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 4px;
   }
   .hero .school {
     font-family: var(--font); font-size: 0.75rem; color: var(--pink);
@@ -80,8 +83,8 @@
   .class-icon {
     font-size: 2rem;
     width: 52px; height: 52px;
-    background: color-mix(in srgb, var(--class-color) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--class-color) 30%, transparent);
+    background: color-mix(in srgb, var(--class-color) 16%, var(--panel-soft));
+    border: 1px solid color-mix(in srgb, var(--class-color) 45%, var(--line));
     border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
@@ -94,7 +97,7 @@
   }
   .class-sub {
     font-family: var(--font); font-size: 0.62rem; letter-spacing: 3px;
-    color: var(--dim); text-transform: uppercase; margin-top: 4px;
+    color: var(--text-muted); text-transform: uppercase; margin-top: 4px;
   }
 
   /* ── SUBSECTION (term / unit) ── */
@@ -103,11 +106,11 @@
 
   .sub-label {
     font-family: var(--font); font-size: 0.62rem; letter-spacing: 4px;
-    text-transform: uppercase; color: var(--dim);
+    text-transform: uppercase; color: var(--text-muted);
     margin-bottom: 16px;
     display: flex; align-items: center; gap: 10px;
   }
-  .sub-label::after { content: ''; flex: 1; height: 1px; background: #1e2255; }
+  .sub-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
 
   /* ── CARD GRID ── */
   .card-grid {
@@ -119,7 +122,7 @@
   /* ── DISPLAY CARD ── */
   .display-card {
     background: var(--panel);
-    border: 1px solid #1e1e44;
+    border: 1px solid var(--line);
     border-radius: 12px;
     overflow: hidden;
     text-decoration: none;
@@ -142,7 +145,7 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 2.8rem;
     background: radial-gradient(ellipse at center, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 70%);
-    border-bottom: 1px solid #1e1e44;
+    border-bottom: 1px solid var(--line);
     position: relative; overflow: hidden;
   }
   .card-preview::after {
@@ -156,14 +159,14 @@
     color: var(--accent); text-transform: uppercase; text-shadow: 0 0 6px currentColor;
   }
   .card-name { font-size: 0.95rem; font-weight: bold; color: var(--white); line-height: 1.3; }
-  .card-desc { font-size: 0.8rem; color: var(--dim); line-height: 1.55; flex: 1; }
+  .card-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; flex: 1; }
   .card-footer {
     display: flex; align-items: center; justify-content: space-between;
-    margin-top: 10px; padding-top: 10px; border-top: 1px solid #1a1a38;
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line);
   }
   .card-class {
     font-family: var(--font); font-size: 0.58rem; letter-spacing: 1px;
-    color: #3a3a66; text-transform: uppercase;
+    color: var(--text-subtle); text-transform: uppercase;
   }
   .card-arrow {
     font-size: 0.8rem; color: var(--accent); opacity: 0.6;
@@ -185,18 +188,18 @@
 
   /* ── EMPTY PLACEHOLDER ── */
   .empty-slot {
-    border: 1px dashed #1e2255; border-radius: 10px;
+    border: 1px dashed var(--line); border-radius: 10px;
     padding: 24px; text-align: center;
-    color: #2e3a5a; font-size: 0.78rem; line-height: 1.7;
+    color: var(--text-subtle); font-size: 0.78rem; line-height: 1.7;
   }
   .empty-slot .plus { font-size: 1.4rem; margin-bottom: 8px; opacity: 0.25; }
 
   /* ── FOOTER ── */
   footer {
     text-align: center; padding: 24px;
-    border-top: 1px solid #1a1a38;
+    border-top: 1px solid var(--line);
     font-family: var(--font); font-size: 0.65rem;
-    color: var(--dim); letter-spacing: 2px;
+    color: var(--text-muted); letter-spacing: 2px;
   }
   footer a { color: var(--teal); text-decoration: none; }
   footer a:hover { text-shadow: 0 0 8px var(--teal); }
