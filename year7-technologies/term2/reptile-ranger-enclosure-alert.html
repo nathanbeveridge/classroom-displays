@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reptile Ranger: Enclosure Alert</title>
+  <style>
+    :root {
+      --bg: #f2f8ff;
+      --card: #ffffff;
+      --safe: #2e9f58;
+      --warn: #d28600;
+      --danger: #c43d3d;
+      --ink: #1f2a37;
+      --accent: #4b7bec;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(180deg, #dff3ff, #f7fbff 45%, #fefcf5);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .game-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      gap: 1rem;
+    }
+
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-size: clamp(1.4rem, 2.8vw, 2.3rem);
+      color: #174a7a;
+    }
+
+    .subtitle {
+      text-align: center;
+      margin: 0;
+      color: #385f87;
+      font-size: 1rem;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 1rem;
+      box-shadow: 0 8px 20px rgba(20, 56, 92, 0.12);
+      border: 2px solid #d8e9f6;
+    }
+
+    .enclosure {
+      min-height: 360px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 0.75rem;
+      transition: background 0.3s ease;
+      background: linear-gradient(180deg, #c8f1ff, #e8f9ff 58%, #f6f2d2 58%, #ece4a8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .enclosure.safe {
+      box-shadow: inset 0 0 0 3px rgba(46, 159, 88, 0.35);
+    }
+
+    .enclosure.unsafe {
+      box-shadow: inset 0 0 0 3px rgba(196, 61, 61, 0.35);
+      filter: saturate(1.02);
+    }
+
+    .sky-icons {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.5rem;
+      opacity: 0.85;
+      padding: 0 0.25rem;
+    }
+
+    .reptile-area {
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .reptile {
+      font-size: clamp(3.8rem, 8vw, 6rem);
+      line-height: 1;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+
+    .reptile.happy { transform: translateY(-3px) scale(1.04); }
+    .reptile.worried { transform: translateY(1px) rotate(-2deg); }
+
+    .mood-text {
+      margin-top: 0.35rem;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.6rem;
+    }
+
+    .metric {
+      background: #f4faff;
+      border: 2px solid #d9ecfb;
+      border-radius: 10px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+
+    .metric h3 {
+      margin: 0;
+      font-size: 0.92rem;
+      color: #325979;
+    }
+
+    .value {
+      margin-top: 0.4rem;
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    .wellbeing-bar-wrap {
+      width: 100%;
+      height: 16px;
+      border-radius: 999px;
+      border: 2px solid #d1d8e0;
+      overflow: hidden;
+      margin-top: 0.5rem;
+      background: #f0f1f2;
+    }
+
+    .wellbeing-bar {
+      height: 100%;
+      width: 100%;
+      transition: width 0.25s linear, background 0.25s;
+      background: linear-gradient(90deg, #5bcf7c, #2e9f58);
+    }
+
+    .alert-box {
+      margin-top: 0.9rem;
+      padding: 0.8rem;
+      border-radius: 10px;
+      font-weight: 700;
+      border: 2px solid #d5e6f5;
+      background: #eef8ff;
+      min-height: 64px;
+      display: grid;
+      align-items: center;
+    }
+
+    .controls {
+      margin-top: 0.9rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      transition: transform 0.08s ease, filter 0.15s;
+    }
+
+    button:hover { filter: brightness(1.05); }
+    button:active { transform: translateY(1px) scale(0.99); }
+
+    .heat-up { background: #e67e22; }
+    .heat-down { background: #2980b9; }
+    .light-up { background: #f1c40f; color: #2e2e2e; }
+    .light-down { background: #6f42c1; }
+    .start-btn {
+      background: var(--accent);
+      grid-column: 1 / -1;
+      font-size: 1.05rem;
+    }
+
+    .explain p {
+      margin: 0.5rem 0;
+      line-height: 1.35;
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 0.78rem;
+      border-radius: 999px;
+      padding: 0.12rem 0.5rem;
+      margin-left: 0.35rem;
+      border: 1px solid #b7d4eb;
+      background: #edf6fd;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrap">
+    <h1>🦎 Reptile Ranger: Enclosure Alert</h1>
+    <p class="subtitle">Be a junior zoo keeper! Keep your reptile comfy by monitoring temperature and light.</p>
+
+    <div class="main-grid">
+      <section class="card enclosure" id="enclosureCard">
+        <div class="sky-icons" id="skyIcons"><span>🌤️</span><span>💡</span></div>
+        <div class="reptile-area">
+          <div class="reptile happy" id="reptileFace">🦎</div>
+          <div class="mood-text" id="moodText">Calm and comfy!</div>
+        </div>
+        <div style="text-align:center;font-weight:700;color:#5c5f3e;">Sandy basking zone</div>
+      </section>
+
+      <section class="card">
+        <div class="status-grid">
+          <div class="metric">
+            <h3>Temperature</h3>
+            <div class="value" id="tempValue">31.0°C</div>
+            <small>Safe: 28–34°C</small>
+          </div>
+          <div class="metric">
+            <h3>Light Level</h3>
+            <div class="value" id="lightValue">60%</div>
+            <small>Safe: 45–75%</small>
+          </div>
+          <div class="metric">
+            <h3>Timer</h3>
+            <div class="value" id="timerValue">90s</div>
+            <small>Round length</small>
+          </div>
+        </div>
+
+        <div class="metric" style="margin-top:0.65rem;text-align:left;">
+          <h3>Reptile Wellbeing</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
+            <strong id="wellbeingLabel">100%</strong>
+            <strong>Score: <span id="scoreValue">0</span></strong>
+          </div>
+          <div class="wellbeing-bar-wrap"><div class="wellbeing-bar" id="wellbeingBar"></div></div>
+        </div>
+
+        <div class="alert-box" id="alertBox">Press Start to begin monitoring.</div>
+
+        <div class="controls">
+          <button class="heat-up" id="heatUpBtn">🔥 Increase Heat</button>
+          <button class="heat-down" id="heatDownBtn">🧊 Decrease Heat</button>
+          <button class="light-up" id="lightUpBtn">🔆 Increase Light</button>
+          <button class="light-down" id="lightDownBtn">🌙 Decrease Light</button>
+          <button class="start-btn" id="startBtn">▶️ Start / Restart</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="card explain">
+      <h2 style="margin-top:0;">How this monitoring system works <span class="pill">Live</span></h2>
+      <p id="inputText"><strong>Input:</strong> Temperature sensor = 31.0°C, Light sensor = 60%.</p>
+      <p id="processText"><strong>Processing:</strong> Compare each reading to safe thresholds.</p>
+      <p id="outputText"><strong>Output:</strong> Conditions are safe. Keep observing patterns over time.</p>
+      <p><strong>Tech + Ethics:</strong> Reptiles rely on outside heat, so regular checks matter. Zoo keepers use data trends (not one single reading) to help animals with minimal disturbance.</p>
+    </section>
+  </div>
+
+  <script>
+    // ===== Teacher-editable configuration values =====
+    const GAME_LENGTH = 90; // seconds
+    const SAFE_TEMP_MIN = 28;
+    const SAFE_TEMP_MAX = 34;
+    const SAFE_LIGHT_MIN = 45;
+    const SAFE_LIGHT_MAX = 75;
+    const TEMP_ACTION_STEP = 1.2;
+    const LIGHT_ACTION_STEP = 3.5;
+    const DRIFT_TEMP_MAX = 0.9;
+    const DRIFT_LIGHT_MAX = 2.4;
+
+    // ===== Game state =====
+    let temp = 31.0;
+    let light = 60;
+    let wellbeing = 100;
+    let score = 0;
+    let timeLeft = GAME_LENGTH;
+    let running = false;
+    let tickHandle = null;
+
+    const tempEl = document.getElementById('tempValue');
+    const lightEl = document.getElementById('lightValue');
+    const timerEl = document.getElementById('timerValue');
+    const wellbeingLabelEl = document.getElementById('wellbeingLabel');
+    const wellbeingBarEl = document.getElementById('wellbeingBar');
+    const scoreEl = document.getElementById('scoreValue');
+    const alertEl = document.getElementById('alertBox');
+    const reptileEl = document.getElementById('reptileFace');
+    const moodEl = document.getElementById('moodText');
+    const enclosureEl = document.getElementById('enclosureCard');
+    const inputTextEl = document.getElementById('inputText');
+    const processTextEl = document.getElementById('processText');
+    const outputTextEl = document.getElementById('outputText');
+
+    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+    const randBetween = (min, max) => Math.random() * (max - min) + min;
+
+    function readingState() {
+      return {
+        tempSafe: temp >= SAFE_TEMP_MIN && temp <= SAFE_TEMP_MAX,
+        lightSafe: light >= SAFE_LIGHT_MIN && light <= SAFE_LIGHT_MAX,
+      };
+    }
+
+    function setAlertAndAdvice() {
+      const { tempSafe, lightSafe } = readingState();
+      let message = 'Conditions are safe. Great monitoring!';
+      let process = 'Both readings are inside thresholds.';
+
+      if (!tempSafe && temp < SAFE_TEMP_MIN) {
+        message = 'Too cold, increase heat.';
+        process = `Temperature ${temp.toFixed(1)}°C is below ${SAFE_TEMP_MIN}°C.`;
+      } else if (!tempSafe && temp > SAFE_TEMP_MAX) {
+        message = 'Too hot, decrease heat.';
+        process = `Temperature ${temp.toFixed(1)}°C is above ${SAFE_TEMP_MAX}°C.`;
+      }
+
+      if (!lightSafe && light < SAFE_LIGHT_MIN) {
+        message = !tempSafe ? `${message} Also too dark, increase light.` : 'Too dark, increase light.';
+        process += ` Light ${Math.round(light)}% is below ${SAFE_LIGHT_MIN}%.`;
+      } else if (!lightSafe && light > SAFE_LIGHT_MAX) {
+        message = !tempSafe ? `${message} Also too bright, reduce light.` : 'Too bright, reduce light.';
+        process += ` Light ${Math.round(light)}% is above ${SAFE_LIGHT_MAX}%.`;
+      }
+
+      alertEl.textContent = message;
+      processTextEl.innerHTML = `<strong>Processing:</strong> ${process}`;
+      outputTextEl.innerHTML = `<strong>Output:</strong> ${message}`;
+
+      const allSafe = tempSafe && lightSafe;
+      reptileEl.className = `reptile ${allSafe ? 'happy' : 'worried'}`;
+      reptileEl.textContent = allSafe ? '🦎' : '😟🦎';
+      moodEl.textContent = allSafe ? 'Calm and comfy!' : 'Worried - needs your help!';
+      enclosureEl.classList.toggle('safe', allSafe);
+      enclosureEl.classList.toggle('unsafe', !allSafe);
+    }
+
+    function updateUi() {
+      tempEl.textContent = `${temp.toFixed(1)}°C`;
+      lightEl.textContent = `${Math.round(light)}%`;
+      timerEl.textContent = `${Math.max(0, Math.ceil(timeLeft))}s`;
+      wellbeingLabelEl.textContent = `${Math.round(wellbeing)}%`;
+      wellbeingBarEl.style.width = `${clamp(wellbeing, 0, 100)}%`;
+      wellbeingBarEl.style.background = wellbeing > 60
+        ? 'linear-gradient(90deg, #5bcf7c, #2e9f58)'
+        : wellbeing > 30
+          ? 'linear-gradient(90deg, #f9cf58, #d89b00)'
+          : 'linear-gradient(90deg, #ff8b8b, #c43d3d)';
+      scoreEl.textContent = score;
+      inputTextEl.innerHTML = `<strong>Input:</strong> Temperature sensor = ${temp.toFixed(1)}°C, Light sensor = ${Math.round(light)}%.`;
+      setAlertAndAdvice();
+    }
+
+    function gameTick() {
+      if (!running) return;
+
+      temp += randBetween(-DRIFT_TEMP_MAX, DRIFT_TEMP_MAX);
+      light += randBetween(-DRIFT_LIGHT_MAX, DRIFT_LIGHT_MAX);
+      temp = clamp(temp, 15, 45);
+      light = clamp(light, 0, 100);
+      timeLeft -= 1;
+
+      const { tempSafe, lightSafe } = readingState();
+      if (tempSafe && lightSafe) {
+        score += 5;
+        wellbeing = clamp(wellbeing + 0.3, 0, 100);
+      } else {
+        wellbeing -= (tempSafe || lightSafe) ? 1.3 : 2.2;
+      }
+
+      if (wellbeing <= 0 || timeLeft <= 0) {
+        endGame();
+      }
+
+      updateUi();
+    }
+
+    function endGame() {
+      running = false;
+      clearInterval(tickHandle);
+      tickHandle = null;
+      updateUi();
+
+      const success = wellbeing > 0;
+      const reflection = success
+        ? `Time's up! Final score: ${score}. Nice work. You watched sensor patterns and acted before risks lasted too long.`
+        : `Wellbeing reached 0. Final score: ${score}. One reading alone can trick us - keep watching trends and adjust earlier next time.`;
+
+      alertEl.textContent = `${reflection} Zoo keepers use inputs, processing and outputs over time to make better animal-care decisions.`;
+      outputTextEl.innerHTML = `<strong>Output:</strong> Round finished. ${reflection}`;
+    }
+
+    function startGame() {
+      temp = 31.0;
+      light = 60;
+      wellbeing = 100;
+      score = 0;
+      timeLeft = GAME_LENGTH;
+      running = true;
+      clearInterval(tickHandle);
+      tickHandle = setInterval(gameTick, 1000);
+      alertEl.textContent = 'Monitoring started. Keep conditions safe!';
+      updateUi();
+    }
+
+    function adjustTemp(amount) {
+      if (!running) return;
+      temp = clamp(temp + amount, 15, 45);
+      updateUi();
+    }
+
+    function adjustLight(amount) {
+      if (!running) return;
+      light = clamp(light + amount, 0, 100);
+      updateUi();
+    }
+
+    document.getElementById('startBtn').addEventListener('click', startGame);
+    document.getElementById('heatUpBtn').addEventListener('click', () => adjustTemp(TEMP_ACTION_STEP));
+    document.getElementById('heatDownBtn').addEventListener('click', () => adjustTemp(-TEMP_ACTION_STEP));
+    document.getElementById('lightUpBtn').addEventListener('click', () => adjustLight(LIGHT_ACTION_STEP));
+    document.getElementById('lightDownBtn').addEventListener('click', () => adjustLight(-LIGHT_ACTION_STEP));
+
+    updateUi();
+  </script>
+</body>
+</html>
